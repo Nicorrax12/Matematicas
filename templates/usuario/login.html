@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión | Matemáticas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* utiliza los estilos del dashboard para coherencia visual */
+        html, body { background: #f4f8fb; margin:0; padding:0; min-height:100vh; font-family: 'Segoe UI', Arial, sans-serif; color: #24416c; }
+        .login-panel { max-width:380px; margin:70px auto 0 auto; background:#fff; border:2px solid #d5e5f5; border-radius:0; box-shadow:0 3px 22px #e5eefe22; padding:38px 44px 28px 44px; }
+        .login-panel h1 { text-align:center; color:#206bcd;font-size:1.5em;font-weight:700;margin-bottom:24px; }
+        label {color:#4d608c;font-weight:550;display:block;margin:18px 0 7px 2px;}
+        input[type="email"], input[type="password"] { width:100%;border:2px solid #d5e5f5;border-radius:0; background:#eef7ff; padding:11px;font-size:1.09em;color:#24416c; }
+        input:focus {border-color:#206bcd;}
+        .btn-login { width:100%;padding:12px 0; background:#206bcd;color:#fff;font-weight:700; font-size:1.09em; border:none; border-radius:0; margin:24px 0 7px 0; cursor:pointer; box-shadow:0 2px 12px #d6eafb66;transition:background .18s;}
+        .btn-login:hover {background:#163257;}
+        .links {text-align:center;margin-top:17px;font-size:.97em;}
+        .links a {color:#206bcd;text-decoration:none;}
+        .links a:hover {text-decoration:underline;color:#163257;}
+        .error { background:#ffe3e3;color:#a52424; border:1px solid #ffa2b7; padding:7px 12px;margin-bottom:12px;border-radius:4px;text-align:center; }
+        .msg-success {background:#e2ffe9;color:#187c3a;border:1px solid #46ca5d;padding:7px 12px;margin-bottom:12px;border-radius:4px;text-align:center;}
+    </style>
+</head>
+<body>
+<div class="login-panel">
+    <h1>Iniciar sesión</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="msg-success">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" required autocomplete="username">
+
+        <label for="contrasena">Contraseña</label>
+        <input type="password" id="contrasena" name="contrasena" required autocomplete="current-password">
+
+        <button class="btn-login" type="submit">Entrar</button>
+    </form>
+    <div class="links">
+        ¿No tienes cuenta? <a href="/usuario/registro">Registrarse</a><br>
+        <a href="/">Volver al inicio</a>
+    </div>
+</div>
+</body>
+</html>

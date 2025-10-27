@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Examen Personalizado</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <style>
+    body { background: #f4f8fb; color: #24416c; font-family: Arial, sans-serif; }
+    .main-panel {
+      max-width: 800px; margin: 44px auto;
+      background: #fff; border:1.5px solid #d4e6f8;
+      border-radius: 12px; box-shadow: 0 6px 50px #b1c9e912;
+      padding: 40px 54px 38px 54px;
+    }
+    h2 { font-size:2em; font-weight: 700; color: #345e86;}
+    label { font-weight:600; }
+    input[type=text], input[type=password], input[type=number] {
+      background: #eaf1fe; border: 1.4px solid #c4d5e7; border-radius: 4px;
+      color: #24416c; padding:8px; margin-bottom:7px; font-size:1em; width: 96%;
+    }
+    input:focus { border-color: #3ba1c7; background: #e1faff;}
+    textarea {
+      width:97%; min-height:44px; padding:7px; font-family:monospace;
+      border:2px solid #5fbb70; background:#fafffa;
+      font-size:17px;margin-bottom:2px;
+      border-radius:7px; transition: .18s;
+      color:#3d6e4a;
+    }
+    textarea:focus { border-color: #3579ff; background: #e6fcff;}
+    select {padding:5px;}
+    .preg-block {
+      margin-bottom:33px;
+      padding:17px 0 0 4px;
+      border-bottom:1px solid #e1e8f3;
+    }
+    .katex-preview {margin:0 0 8px 2px; min-height:31px; background:#f8fff3; padding:4px 9px;border-radius:6px;border:1.2px solid #9fe5ae;}
+    .btn-examen { background:#216bbe; color:#fff; border:none; padding:10px 38px; font-size:1.13em; font-weight:600; border-radius:6px; margin:20px auto 0; display:block; }
+    .btn-examen:hover { background:#153c6a;}
+    .btn-launch-math {position:fixed; bottom:24px; right:27px; background: #237eeb; color:#fff; border-radius:8px; border:none; padding:12px 30px; font-size:1.05em; z-index:9998; letter-spacing: 1px;}
+    .btn-launch-math:hover {background: #165a9a;}
+    .math-keyboard-panel {
+      display:none; position:fixed; top: 14vh; left: 110px; min-width: 234px; width: 385px; resize: both; overflow: auto;
+      background: #fafdff; border: 2px solid #2693bb; border-radius: 18px; z-index: 9999;
+      box-shadow: 0 4px 18px #308cc122; padding: 0 9px 10px 9px;
+    }
+    .draggable-panel-header { cursor: move; background: #3c9fff; color:#fff; padding: 8px 8px 6px 18px; border-radius: 16px 16px 0 0; font-weight: 700; letter-spacing: 1px; margin: 0 -9px 7px -9px; font-size: 18px;}
+    .math-keys { display: flex; flex-wrap: wrap; gap: 5px;}
+    .math-key { background: #e3eefa; border:1.2px solid #85c6e2; border-radius:6px; margin:2px; min-width:30px; font-size:18px; padding:6px 11px; cursor:pointer; text-align:center; transition:.13s;}
+    .math-key:hover {background:#d9f7e8; border-color:#13b691; color:#036;}
+    .math-close-btn { float:right; font-size:23px; color:#fff; font-weight:900; border:none; background:none; margin:0 11px 0 0; cursor:pointer;}
+    .help-mark {color:#829eb9;font-size:14px;}
+  </style>
+</head>
+<body>
+  <button class="btn-launch-math" onclick="abrirTeclado()">🧮 Teclado Matemático</button>
+  <div class="math-keyboard-panel" id="panel-math">
+    <div id="math-panel-header" class="draggable-panel-header">Teclado Matemático
+      <button class="math-close-btn" onclick="cerrarTeclado()">×</button>
+    </div>
+    <div class="math-keys">
+      <span class="math-key" onclick="insertarPlantilla('x')">x</span>
+      <span class="math-key" onclick="insertarPlantilla('y')">y</span>
+      <span class="math-key" onclick="insertarPlantilla('z')">z</span>
+      <span class="math-key" onclick="insertarPlantilla('\\pi')">π</span>
+      <span class="math-key" onclick="insertarPlantilla('^▢')">²</span>
+      <span class="math-key" onclick="insertarPlantilla('^▢')">³</span>
+      <span class="math-key" onclick="insertarPlantilla('+')">+</span>
+      <span class="math-key" onclick="insertarPlantilla('-')">−</span>
+      <span class="math-key" onclick="insertarPlantilla('=')">=</span>
+      <span class="math-key" onclick="insertarPlantilla('\\sqrt{▢}')">√</span>
+      <span class="math-key" onclick="insertarPlantilla('\\frac{▢}{▢}')">a⁄b</span>
+      <span class="math-key" onclick="insertarPlantilla('\\int_{▢}^{▢}')">∫</span>
+      <span class="math-key" onclick="insertarPlantilla('\\sum_{▢}^{▢}')">∑</span>
+      <span class="math-key" onclick="insertarPlantilla('\\sin(▢)')">sin</span>
+      <span class="math-key" onclick="insertarPlantilla('\\cos(▢)')">cos</span>
+      <span class="math-key" onclick="insertarPlantilla('\\tan(▢)')">tan</span>
+      <span class="math-key" onclick="insertarPlantilla('(')">(</span>
+      <span class="math-key" onclick="insertarPlantilla(')')">)</span>
+      <span class="math-key" onclick="insertarPlantilla(',')">,</span>
+      <span class="math-key" onclick="insertarPlantilla('\\log(▢)')">log</span>
+      <span class="math-key" onclick="insertarPlantilla('^{▢}')">x<sup>y</sup></span>
+      <span class="math-key" onclick="insertarPlantilla('_{▢}')">x<sub>y</sub></span>
+      <span class="math-key" onclick="insertarPlantilla('{')">{</span>
+      <span class="math-key" onclick="insertarPlantilla('}')">}</span>
+      <span class="math-key" onclick="insertarPlantilla('1')">1</span>
+      <span class="math-key" onclick="insertarPlantilla('2')">2</span>
+      <span class="math-key" onclick="insertarPlantilla('3')">3</span>
+      <span class="math-key" onclick="insertarPlantilla('4')">4</span>
+      <span class="math-key" onclick="insertarPlantilla('5')">5</span>
+      <span class="math-key" onclick="insertarPlantilla('6')">6</span>
+      <span class="math-key" onclick="insertarPlantilla('7')">7</span>
+      <span class="math-key" onclick="insertarPlantilla('8')">8</span>
+      <span class="math-key" onclick="insertarPlantilla('9')">9</span>
+      <span class="math-key" onclick="insertarPlantilla('0')">0</span>
+      <span class="math-key" onclick="borrarUltimo()">⌫</span>
+      <span class="math-key" onclick="limpiarCampo()">AC</span>
+      <span class="math-key" onclick="saltarHueco()" style="background:#edfeec">Tab ↦</span>
+    </div>
+    <div class="help-mark">Usa Tab para saltar a los huecos (▢) y escribe encima para reemplazar.</div>
+  </div>
+  <div class="main-panel">
+    <h2>Crear Examen Personalizado</h2>
+    {% if exito %}
+      <div style="background:#e2ffe2;border:2px solid #45a24a;color:#25641b;padding:8px 13px;font-weight:700;border-radius:7px;margin-bottom:12px;">
+        {{ exito }}<br>
+        <span style="font-size:1.08em;color:#185a87;padding-top:10px;display:inline-block;">
+          Código de ingreso al examen: <b>{{ codigo_examen }}</b><br>
+          Contraseña del examen: <b>{{ clave_examen }}</b>
+        </span><br>
+        <a href="{{ url_for('index') }}"
+           style="display:inline-block;margin-top:13px;background:#3579ff;color:#fff;padding:7px 17px;border-radius:6px;text-decoration:none;font-weight:700;">
+           Volver al inicio
+        </a>
+      </div>
+    {% endif %}
+    {% if error %}
+      <div style="background:#ffe2e2;border:2px solid #e66c69;color:#782426;padding:8px 13px;font-weight:700;border-radius:7px;margin-bottom:12px;">{{ error }}</div>
+    {% endif %}
+    <form method="POST" autocomplete="off" id="examenForm">
+      <label>Nombre del examen:</label>
+      <input type="text" name="nombre_examen" required>
+      <label>Contraseña acceso examen:</label>
+      <input type="password" name="contrasena" required>
+      <label>Cantidad de preguntas:</label>
+      <input type="number" id="n_preguntas" name="n_preguntas" value="3" min="1" max="50" onchange="generarPreguntas();">
+      <div id="preguntas_div"></div>
+      <button class="btn-examen" type="submit">Crear Examen</button>
+    </form>
+  </div>
+  <script>
+    let campoActivo = null;
+    dragElement(document.getElementById("panel-math"), document.getElementById("math-panel-header"));
+    function dragElement(panel, header) {
+      let pos1=0, pos2=0, pos3=0, pos4=0;
+      header.onmousedown = dragMouseDown;
+      function dragMouseDown(e) { e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY;
+        document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
+      }
+      function elementDrag(e) { e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+        pos3 = e.clientX; pos4 = e.clientY;
+        panel.style.top = (panel.offsetTop - pos2) + "px";
+        panel.style.left = (panel.offsetLeft - pos1) + "px";
+      }
+      function closeDragElement() { document.onmouseup = null; document.onmousemove = null;}
+    }
+    function generarPreguntas() {
+      var cantidad = parseInt(document.getElementById('n_preguntas').value) || 1;
+      var preguntasDiv = document.getElementById('preguntas_div');
+      preguntasDiv.innerHTML = "";
+      for(var i = 1; i <= cantidad; i++) {
+        preguntasDiv.innerHTML += `
+        <div class="preg-block">
+          <b>Pregunta ${i}:</b>
+          <textarea id="pregunta_${i}" name="pregunta_${i}" placeholder="Escribe la pregunta" onfocus="seleccionarCampo(this); renderLive(this, 'preview_preg_${i}')"
+            oninput="renderLive(this, 'preview_preg_${i}')" onkeydown="if(event.key==='Tab'){event.preventDefault();saltarHueco();}"></textarea>
+          <div id="preview_preg_${i}" class="katex-preview"></div>
+          <label>A:</label> <textarea id="opcion_a_${i}" name="opcion_a_${i}" placeholder="Opción A" onfocus="seleccionarCampo(this); renderLive(this, 'preview_a_${i}')"
+          oninput="renderLive(this, 'preview_a_${i}')" onkeydown="if(event.key==='Tab'){event.preventDefault();saltarHueco();}"></textarea>
+          <div id="preview_a_${i}" class="katex-preview"></div>
+          <label>B:</label> <textarea id="opcion_b_${i}" name="opcion_b_${i}" placeholder="Opción B" onfocus="seleccionarCampo(this); renderLive(this, 'preview_b_${i}')"
+            oninput="renderLive(this, 'preview_b_${i}')" onkeydown="if(event.key==='Tab'){event.preventDefault();saltarHueco();}"></textarea>
+          <div id="preview_b_${i}" class="katex-preview"></div>
+          <label>C:</label> <textarea id="opcion_c_${i}" name="opcion_c_${i}" placeholder="Opción C" onfocus="seleccionarCampo(this); renderLive(this, 'preview_c_${i}')"
+            oninput="renderLive(this, 'preview_c_${i}')" onkeydown="if(event.key==='Tab'){event.preventDefault();saltarHueco();}"></textarea>
+          <div id="preview_c_${i}" class="katex-preview"></div>
+          <label>D:</label> <textarea id="opcion_d_${i}" name="opcion_d_${i}" placeholder="Opción D" onfocus="seleccionarCampo(this); renderLive(this, 'preview_d_${i}')"
+            oninput="renderLive(this, 'preview_d_${i}')" onkeydown="if(event.key==='Tab'){event.preventDefault();saltarHueco();}"></textarea>
+          <div id="preview_d_${i}" class="katex-preview"></div>
+          <label>Correcta:
+            <select name="correcta_${i}">
+              <option value="a">A</option>
+              <option value="b">B</option>
+              <option value="c">C</option>
+              <option value="d">D</option>
+            </select>
+          </label>
+        </div>
+        `;
+      }
+    }
+    function seleccionarCampo(elemento) {
+      campoActivo = elemento;
+      elemento.style.borderColor = '#3579ff';
+      document.querySelectorAll('textarea').forEach(ta => { if(ta !== elemento) ta.style.borderColor = '#5fbb70';});
+    }
+    function renderLive(textareaElem, previewId) {
+      var input = textareaElem.value.replace(/▢/g,'\\Box');
+      var preview = document.getElementById(previewId);
+      try { katex.render(input, preview, {throwOnError: false}); } catch (e) {
+        preview.innerHTML = '<span style="color:#c44">Error</span>';
+      }
+    }
+    function insertarPlantilla(simbolo) {
+      if (!campoActivo) { alert('Selecciona un campo primero'); return; }
+      let marker = '▢';
+      let start = campoActivo.selectionStart, end = campoActivo.selectionEnd;
+      let texto = campoActivo.value;
+      campoActivo.value = texto.substring(0, start) + simbolo + texto.substring(end);
+      let pos = campoActivo.value.indexOf(marker, start);
+      if(pos !== -1) {
+        campoActivo.selectionStart = campoActivo.selectionEnd = pos;
+      } else {
+        campoActivo.selectionStart = campoActivo.selectionEnd = start + simbolo.length;
+      }
+      campoActivo.focus();
+      let idcampo = campoActivo.id.replace('opcion','preview').replace('pregunta','preview');
+      renderLive(campoActivo, idcampo);
+    }
+    function borrarUltimo() {
+      if (!campoActivo) return;
+      let start = campoActivo.selectionStart, end = campoActivo.selectionEnd;
+      if(start === end && start > 0) {
+        campoActivo.value = campoActivo.value.slice(0, start-1) + campoActivo.value.slice(end);
+        campoActivo.selectionStart = campoActivo.selectionEnd = start-1;
+      } else {
+        campoActivo.value = campoActivo.value.slice(0, start) + campoActivo.value.slice(end);
+        campoActivo.selectionStart = campoActivo.selectionEnd = start;
+      }
+      let idcampo = campoActivo.id.replace('opcion','preview').replace('pregunta','preview');
+      renderLive(campoActivo, idcampo);
+    }
+    function limpiarCampo() {
+      if (!campoActivo) return;
+      campoActivo.value = '';
+      let idcampo = campoActivo.id.replace('opcion','preview').replace('pregunta','preview');
+      renderLive(campoActivo, idcampo);
+    }
+    function saltarHueco() {
+      if (!campoActivo) return;
+      let val = campoActivo.value;
+      let start = campoActivo.selectionStart;
+      let pos = val.indexOf('▢', start+1);
+      if(pos === -1) pos = val.indexOf('▢');
+      if(pos !== -1){
+        campoActivo.selectionStart = campoActivo.selectionEnd = pos;
+        campoActivo.focus();
+      }
+    }
+    function abrirTeclado() { document.getElementById('panel-math').style.display='block'; }
+    function cerrarTeclado() { document.getElementById('panel-math').style.display='none'; }
+    window.onload = function() { generarPreguntas(); }
+  </script>
+</body>
+</html>

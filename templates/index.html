@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Matemáticas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html, body {
+            background: #f4f8fb;
+            margin:0; padding:0;
+            min-height:100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #24416c;
+        }
+        .navbar {
+            width:100%; background:#e9f1fa; border-bottom:2px solid #bdd3eb;
+            height:56px; min-height:56px;
+            display: flex; justify-content:space-between; align-items:center;
+            padding: 0 36px; box-sizing:border-box;
+        }
+        .logo {
+            font-size:1.48em;font-weight:700;color:#206bcd;letter-spacing:1.5px;
+        }
+        .user {
+            color:#206bcd;font-size:1.08em;display:flex;align-items:center;gap:15px;
+        }
+        .btn-dash {
+            background:#206bcd; color:#f4f8fb;
+            border:none;padding:7px 24px;font-size:1em;font-weight:700;
+            border-radius:0; margin-left:5px;cursor:pointer;transition:background .16s;}
+        .btn-dash:hover {background:#163257;color:#fff;}
+        .container-main {
+            margin: 60px auto 0 auto;
+            max-width:1200px;
+            padding:12px;
+        }
+        .main-title {
+            font-size:2.1em;font-weight:700;margin-bottom:8px;padding-left:2px;
+        }
+        .main-desc {
+            color:#597599;font-size:1.1em;margin-bottom:30px;padding-left:2px;
+        }
+        .grid-modes {
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap:24px;
+        }
+        .card {
+            background:#fff;
+            border:2px solid #d5e5f5;
+            border-radius:0;
+            box-shadow:0 2px 10px #e5eefe22;
+            padding:38px 25px 28px 25px;
+            display:flex;flex-direction:column;align-items:flex-start;
+            transition:box-shadow .15s, border .18s;
+            min-height:185px;
+        }
+        .card:hover {border:2px solid #206bcd; box-shadow:0 8px 24px #a6c7f322;}
+        .card h3 {font-size:1.17em;font-weight:800;color:#206bcd;margin-bottom:4px;}
+        .card p {font-size:.99em;color:#5079a8;margin:9px 0 18px 0;flex:1;}
+        .card .btn-card {
+            padding:8px 28px;font-size:1.05em;
+            background:#f4f8fb;color:#206bcd;
+            border:2px solid #206bcd;border-radius:0;
+            font-weight:700;cursor:pointer;transition:background .13s, color .13s;
+        }
+        .card .btn-card:hover {background:#206bcd;color:#fff;}
+        .footer {margin:38px auto 0 auto;text-align:center;font-size:1.03em;color:#b6bed1;}
+        @media (max-width:700px){
+            .container-main{padding:3px;}
+            .navbar{padding:0 12px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <span class="logo"><i class="fa-solid fa-calculator"></i> Matemáticas</span>
+<div class="user">
+    {% if isLogged %}
+        <span><i class="fa-solid fa-user"></i> {{ nombre }}</span>
+        <a class="btn-dash" href="{{ url_for('logout') }}">Cerrar sesión</a>
+    {% else %}
+        <a class="btn-dash" href="/usuario/login">Iniciar sesión</a>
+        <a class="btn-dash" href="/usuario/registro">Registrarse</a>
+    {% endif %}
+</div>
+    </div>
+    <div class="container-main">
+        <div class="main-title">Panel de Control</div>
+        <div class="main-desc">Gestiona y accede a todas las funciones: juega, administra exámenes, revisa tu perfil y más.</div>
+        <div class="grid-modes">
+            <div class="card">
+                <h3><i class="fa-solid fa-gamepad"></i> Modo Normal</h3>
+                <p>Practica preguntas por nivel y mejora tu puntaje.</p>
+                <a class="btn-card" href="/modos/normal">Jugar</a>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-fire"></i> Modo Hardcore</h3>
+                <p>Solo una oportunidad por pregunta. ¿Hasta dónde llegas?</p>
+                <a class="btn-card" href="/modos/hardcore">Jugar Hardcore</a>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-users"></i> Concurso</h3>
+                <p>Compite en rondas eliminatorias contra otros participantes.</p>
+                <a class="btn-card" href="/modos/concurso">Concursar</a>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-user-plus"></i> Crear Examen</h3>
+                <p>Arma un examen personalizado con opciones y tiempo límite.</p>
+                <a class="btn-card" href="/panel/crear_examen">Nuevo Examen</a>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-door-open"></i> Unirse a Examen</h3>
+                <p>Ingresa una clave y participa en exámenes compartidos.</p>
+                <a class="btn-card" href="/unirse_examen">Unirse</a>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-trophy"></i> Crear Concurso</h3>
+                <p>Crea tu propio concurso y comparte el acceso con amigos.</p>
+                <a class="btn-card" href="/panel/crear_concurso">Nuevo Concurso</a>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-chart-line"></i> Estadísticas</h3>
+                <p>Revisa tu evolución y compara tu desempeño.</p>
+                <a class="btn-card" href="/panel/perfil">Ver perfil</a>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-folder-open"></i> Mis Exámenes</h3>
+                <p>Administra, edita o elimina exámenes guardados.</p>
+                <a class="btn-card" href="/panel/admin_examenes">Administrar</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        &copy; {{2025}} Matemáticas | Dashboard profesional
+    </div>
+</body>
+</html>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="msg-success">{{ messages[0] }}</div>
+  {% endif %}
+{% endwith %}

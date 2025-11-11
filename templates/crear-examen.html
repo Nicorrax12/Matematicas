@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Examen - UNIPAZ</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="/static/css/math-panel.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+            padding: 2rem 0;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .back-btn a {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+        }
+        .left-panel {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        .left-panel h2 {
+            color: #e0e0ff;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.5);
+            padding-bottom: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #e0e0ff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.65rem;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .form-group select option {
+            background: #16213e;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .codigo-acceso {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(76, 175, 80, 0.2);
+            border-left: 4px solid #76d776;
+            border-radius: 6px;
+            display: none;
+        }
+        .codigo-acceso.show {
+            display: block;
+        }
+        .codigo-acceso p {
+            color: #76d776;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .codigo-texto {
+            background: rgba(0,0,0,0.3);
+            padding: 0.75rem;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #76d776;
+            font-family: monospace;
+        }
+        .contador-preguntas {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 6px;
+            text-align: center;
+            color: #e0e0ff;
+            font-weight: bold;
+        }
+        .right-panel {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            max-height: 900px;
+            overflow-y: auto;
+        }
+        .right-panel h2 {
+            color: #e0e0ff;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.5);
+            padding-bottom: 1rem;
+        }
+        .pregunta-form {
+            background: rgba(102, 126, 234, 0.15);
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #667eea;
+        }
+        .pregunta-form h4 {
+            color: #e0e0ff;
+            margin-bottom: 0.8rem;
+        }
+        .pregunta-form label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #e0e0ff;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .pregunta-form textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.9rem;
+            margin-bottom: 0.7rem;
+            min-height: 60px;
+        }
+        .pregunta-form textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .preview-formula {
+            background: rgba(0,0,0,0.2);
+            padding: 0.8rem;
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+            min-height: 50px;
+            border: 2px dashed rgba(102, 126, 234, 0.5);
+            color: #b0b0d0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .preview-formula.has-content {
+            color: #ffffff;
+            background: rgba(102, 126, 234, 0.2);
+            border-style: solid;
+            border-color: rgba(102, 126, 234, 0.7);
+        }
+        .opciones-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin: 0.8rem 0;
+        }
+        .opcion-item {
+            background: rgba(0,0,0,0.2);
+            padding: 0.8rem;
+            border-radius: 6px;
+        }
+        .opcion-item label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+            color: #e0e0ff;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .opcion-item input[type="radio"] {
+            width: auto;
+            cursor: pointer;
+        }
+        .opcion-item textarea {
+            width: 100%;
+            margin: 0;
+            min-height: 40px;
+            font-size: 0.85rem;
+        }
+        .btn-agregar {
+            background: rgba(76, 175, 80, 0.3);
+            color: #76d776;
+            border: 2px solid #76d776;
+            width: 100%;
+            margin-top: 0.8rem;
+        }
+        .btn-agregar:hover {
+            background: rgba(76, 175, 80, 0.4);
+        }
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 150, 136, 0.9);
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            z-index: 2000;
+        }
+        .notification.error {
+            background: rgba(244, 67, 54, 0.9);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @media (max-width: 1200px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .left-panel { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">📚 UNIPAZ</a>
+    </div>
+
+    <div class="container">
+        <div class="back-btn">
+            <a href="/">← Volver al inicio</a>
+        </div>
+
+        <div class="page-header">
+            <h1>✏️ Crear Examen</h1>
+            <p>Diseña tu examen personalizado</p>
+        </div>
+
+        <div class="main-layout">
+            <div class="left-panel">
+                <h2>📋 Datos del Examen</h2>
+
+                <div class="form-group">
+                    <label>Nombre del Examen</label>
+                    <input type="text" id="nombreExamen" placeholder="Ej: Parcial Cálculo">
+                </div>
+
+                <div class="form-group">
+                    <label>Materia</label>
+                    <select id="materiaExamen">
+                        <option value="">Cargando...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Duración (minutos)</label>
+                    <input type="number" id="duracionExamen" value="60" min="10">
+                </div>
+
+                <div class="form-group">
+                    <label>Contraseña (Opcional)</label>
+                    <input type="password" id="contrasenaExamen" placeholder="Opcional">
+                </div>
+
+                <div class="form-group">
+                    <label>Cantidad de Preguntas</label>
+                    <input type="number" id="cantidadPreguntas" value="1" min="1" max="100" onchange="actualizarPreguntas()">
+                </div>
+
+                <button class="btn btn-primary" onclick="guardarExamen()" id="btnGuardar">💾 Guardar Examen</button>
+
+                <div id="codigoAcceso" class="codigo-acceso">
+                    <p>✓ Código de acceso:</p>
+                    <div class="codigo-texto" id="codigoTexto"></div>
+                </div>
+
+                <div class="contador-preguntas" id="contadorPreguntas">
+                    0 / 1 preguntas
+                </div>
+            </div>
+
+            <div class="right-panel" id="preguntasContainer">
+                <h2>❓ Preguntas</h2>
+                <p style="color: #b0b0d0; text-align: center;">Primero guarda el examen.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/math-panel.js" defer></script>
+    <script>
+        const API_URL = `/api`;
+        let examenActual = null;
+        let materiaActual = null;
+        let preguntasAgregadas = 0;
+
+        // Cargar materias
+        async function cargarMaterias() {
+            try {
+                const res = await fetch(`${API_URL}/materias`);
+                const materias = await res.json();
+                const select = document.getElementById('materiaExamen');
+                select.innerHTML = '<option value="">Selecciona una materia</option>';
+                materias.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.id;
+                    opt.textContent = m.nombre;
+                    select.appendChild(opt);
+                });
+            } catch (e) {
+                console.error('Error:', e);
+                mostrarNotificacion('Error cargando materias', 'error');
+            }
+        }
+
+        // Guardar examen
+        async function guardarExamen() {
+            const nombre = document.getElementById('nombreExamen').value.trim();
+            const materiaId = document.getElementById('materiaExamen').value;
+            const duracion = document.getElementById('duracionExamen').value;
+            const contraseña = document.getElementById('contrasenaExamen').value.trim();
+
+            if (!nombre || !materiaId) {
+                mostrarNotificacion('Completa nombre y materia', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/examenes/crear`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre,
+                        materia_id: parseInt(materiaId),
+                        duracion_minutos: parseInt(duracion),
+                        contraseña: contraseña || null
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    examenActual = data.examen_id;
+                    materiaActual = parseInt(materiaId);
+                    
+                    document.getElementById('codigoAcceso').classList.add('show');
+                    document.getElementById('codigoTexto').textContent = data.codigo_acceso;
+                    document.getElementById('nombreExamen').disabled = true;
+                    document.getElementById('materiaExamen').disabled = true;
+                    document.getElementById('btnGuardar').disabled = true;
+
+                    mostrarNotificacion('✓ Examen creado', 'success');
+                    actualizarPreguntas();
+                } else {
+                    mostrarNotificacion(data.error || 'Error', 'error');
+                }
+            } catch (e) {
+                mostrarNotificacion('Error: ' + e.message, 'error');
+            }
+        }
+
+        // Actualizar preguntas
+        function actualizarPreguntas() {
+            if (!examenActual) return;
+
+            const cantidad = parseInt(document.getElementById('cantidadPreguntas').value);
+            const container = document.getElementById('preguntasContainer');
+            
+            let html = `<h2>❓ Preguntas (${preguntasAgregadas}/${cantidad})</h2>`;
+
+            for (let i = 0; i < cantidad; i++) {
+                html += `
+                    <div class="pregunta-form">
+                        <h4>Pregunta ${i + 1}</h4>
+                        
+                        <label>Enunciado</label>
+                        <textarea id="texto_${i}" placeholder="Pregunta" onchange="actualizarPreview('texto_${i}')"></textarea>
+                        <div class="preview-formula" id="preview_texto_${i}">Preview</div>
+
+                        <label>Opciones:</label>
+                        <div class="opciones-grid">
+                            <div class="opcion-item">
+                                <label><input type="radio" name="correcta_${i}" value="A"> A</label>
+                                <textarea id="opcionA_${i}" onchange="actualizarPreview('opcionA_${i}')"></textarea>
+                            </div>
+                            <div class="opcion-item">
+                                <label><input type="radio" name="correcta_${i}" value="B"> B</label>
+                                <textarea id="opcionB_${i}" onchange="actualizarPreview('opcionB_${i}')"></textarea>
+                            </div>
+                            <div class="opcion-item">
+                                <label><input type="radio" name="correcta_${i}" value="C"> C</label>
+                                <textarea id="opcionC_${i}" onchange="actualizarPreview('opcionC_${i}')"></textarea>
+                            </div>
+                            <div class="opcion-item">
+                                <label><input type="radio" name="correcta_${i}" value="D"> D</label>
+                                <textarea id="opcionD_${i}" onchange="actualizarPreview('opcionD_${i}')"></textarea>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-agregar" onclick="agregarPregunta(${i})">➕ Agregar</button>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Actualizar preview
+        function actualizarPreview(fieldId) {
+            const elem = document.getElementById(fieldId);
+            const preview = document.getElementById('preview_' + fieldId);
+            if (!preview) return;
+
+            const texto = elem.value.trim();
+            if (!texto) {
+                preview.textContent = 'Preview';
+                preview.classList.remove('has-content');
+            } else {
+                preview.innerHTML = texto.includes('\\') ? `$$ ${texto} $$` : texto;
+                preview.classList.add('has-content');
+                if (window.MathJax) {
+                    MathJax.typesetPromise([preview]).catch(() => {});
+                }
+            }
+        }
+
+        // Agregar pregunta - AQUI NO ENVIAMOS examen_id
+        async function agregarPregunta(indice) {
+            if (!examenActual) {
+                mostrarNotificacion('Guarda el examen primero', 'error');
+                return;
+            }
+
+            const texto = document.getElementById(`texto_${indice}`).value.trim();
+            const opcionA = document.getElementById(`opcionA_${indice}`).value.trim();
+            const opcionB = document.getElementById(`opcionB_${indice}`).value.trim();
+            const opcionC = document.getElementById(`opcionC_${indice}`).value.trim();
+            const opcionD = document.getElementById(`opcionD_${indice}`).value.trim();
+            const respuesta = document.querySelector(`input[name="correcta_${indice}"]:checked`);
+
+            if (!texto || !opcionA || !opcionB || !opcionC || !opcionD || !respuesta) {
+                mostrarNotificacion('Completa todos los campos', 'error');
+                return;
+            }
+
+            try {
+                // ✅ NO INCLUIMOS examen_id EN EL PAYLOAD
+                const payload = {
+                    materia_id: materiaActual,
+                    texto,
+                    opcion_a: opcionA,
+                    opcion_b: opcionB,
+                    opcion_c: opcionC,
+                    opcion_d: opcionD,
+                    respuesta_correcta: respuesta.value
+                };
+
+                const res = await fetch(`${API_URL}/examenes/${examenActual}/preguntas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    preguntasAgregadas++;
+                    document.getElementById(`texto_${indice}`).value = '';
+                    document.getElementById(`opcionA_${indice}`).value = '';
+                    document.getElementById(`opcionB_${indice}`).value = '';
+                    document.getElementById(`opcionC_${indice}`).value = '';
+                    document.getElementById(`opcionD_${indice}`).value = '';
+                    document.querySelectorAll(`input[name="correcta_${indice}"]`).forEach(r => r.checked = false);
+
+                    const cantidad = parseInt(document.getElementById('cantidadPreguntas').value);
+                    document.getElementById('contadorPreguntas').textContent = `${preguntasAgregadas} / ${cantidad} preguntas`;
+
+                    mostrarNotificacion(`✓ Pregunta ${preguntasAgregadas} agregada`, 'success');
+                } else {
+                    mostrarNotificacion(data.error || 'Error', 'error');
+                }
+            } catch (e) {
+                mostrarNotificacion('Error: ' + e.message, 'error');
+            }
+        }
+
+        // Notificación
+        function mostrarNotificacion(msg, tipo = 'success') {
+            const div = document.createElement('div');
+            div.className = `notification ${tipo}`;
+            div.textContent = msg;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarMaterias);
+    </script>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unirse a Examen - UNIPAZ</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+            padding: 2rem 0;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .back-btn a {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .search-panel {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        .search-panel h2 {
+            color: #e0e0ff;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.5);
+            padding-bottom: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #e0e0ff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.65rem;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .btn {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .examen-info {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(76, 175, 80, 0.1) 100%);
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+        .examen-info.show {
+            display: block;
+        }
+        .examen-info p {
+            color: #e0e0ff;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .examen-info strong {
+            color: #76d776;
+        }
+        .examen-details {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 400px;
+        }
+        .examen-details h2 {
+            color: #e0e0ff;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.5);
+            padding-bottom: 1rem;
+        }
+        .examen-details p {
+            color: #b0b0d0;
+            text-align: center;
+            padding: 2rem;
+        }
+        .pregunta-item {
+            background: rgba(102, 126, 234, 0.15);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #667eea;
+        }
+        .pregunta-item h3 {
+            color: #e0e0ff;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        .pregunta-texto {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 6px;
+            min-height: 40px;
+        }
+        .pregunta-texto mjx-container {
+            font-size: 1.1em;
+        }
+        .pregunta-item .opciones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .opcion {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+        .opcion:hover {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        .opcion.selected {
+            background: rgba(102, 126, 234, 0.5);
+            border-color: #667eea;
+        }
+        .opcion label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: #e0e0ff;
+            font-weight: 600;
+            width: 100%;
+        }
+        .opcion input {
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .opcion-texto {
+            font-size: 0.9rem;
+            flex: 1;
+        }
+        .botones-nav {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .botones-nav .btn {
+            flex: 1;
+            margin-top: 0;
+        }
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 150, 136, 0.9);
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            z-index: 2000;
+            max-width: 400px;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+        }
+        .notification.error {
+            background: rgba(244, 67, 54, 0.9);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @media (max-width: 1200px) {
+            .main-content { grid-template-columns: 1fr; }
+            .search-panel { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">📚 UNIPAZ</a>
+    </div>
+
+    <div class="container">
+        <div class="back-btn">
+            <a href="/">← Volver al inicio</a>
+        </div>
+
+        <div class="page-header">
+            <h1>📝 Unirse a Examen</h1>
+            <p>Ingresa el código de acceso para responder el examen</p>
+        </div>
+
+        <div class="main-content">
+            <div class="search-panel">
+                <h2>🔍 Código</h2>
+
+                <div class="form-group">
+                    <label>Código (12 caracteres)</label>
+                    <input type="text" id="codigoAcceso" placeholder="Ej: A1B2C3D4E5F6" maxlength="12">
+                </div>
+
+                <button class="btn btn-primary" onclick="buscarExamen()" id="btnBuscar">🔎 Buscar</button>
+
+                <div id="examenInfo" class="examen-info">
+                    <p><strong>✓ Examen:</strong></p>
+                    <p id="nombreExamen" style="font-size: 1rem; margin-bottom: 1rem;"></p>
+                    <p><strong>Preguntas:</strong> <span id="numPreguntas">0</span></p>
+                    <p><strong>Duración:</strong> <span id="duracion">0</span> min</p>
+                    <button class="btn btn-primary" onclick="cargarExamen()" style="margin-top: 1rem;">▶ Comenzar</button>
+                </div>
+            </div>
+
+            <div class="examen-details" id="examenDetails">
+                <h2>❓ Preguntas</h2>
+                <p>Usa el panel izquierdo para buscar un examen</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = `/api`;
+        let examenActual = null;
+        let preguntasExamen = [];
+        let preguntaActual = 0;
+        let respuestas = {};
+
+        async function buscarExamen() {
+            const codigo = document.getElementById('codigoAcceso').value.trim().toUpperCase();
+
+            if (!codigo || codigo.length < 12) {
+                mostrarNotificacion('Código debe tener 12 caracteres', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/examenes/buscar-por-codigo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ codigo_acceso: codigo })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    mostrarNotificacion(data.error || 'Código no encontrado', 'error');
+                    document.getElementById('examenInfo').classList.remove('show');
+                    return;
+                }
+
+                examenActual = data.examen_id;
+                document.getElementById('nombreExamen').textContent = data.nombre;
+                document.getElementById('duracion').textContent = data.duracion;
+                document.getElementById('examenInfo').classList.add('show');
+
+                mostrarNotificacion('✓ Examen encontrado', 'success');
+            } catch (e) {
+                mostrarNotificacion('Error: ' + e.message, 'error');
+            }
+        }
+
+        async function cargarExamen() {
+            if (!examenActual) {
+                mostrarNotificacion('Examen no encontrado', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/examenes/${examenActual}/preguntas`);
+                preguntasExamen = await res.json();
+
+                console.log('Preguntas cargadas:', preguntasExamen);
+
+                if (!preguntasExamen || preguntasExamen.length === 0) {
+                    mostrarNotificacion('No hay preguntas en este examen', 'error');
+                    return;
+                }
+
+                document.getElementById('numPreguntas').textContent = preguntasExamen.length;
+                preguntaActual = 0;
+                respuestas = {};
+                mostrarPregunta();
+            } catch (e) {
+                mostrarNotificacion('Error al cargar: ' + e.message, 'error');
+            }
+        }
+
+        function mostrarPregunta() {
+            if (preguntaActual >= preguntasExamen.length) {
+                mostrarResultados();
+                return;
+            }
+
+            const pregunta = preguntasExamen[preguntaActual];
+            const container = document.getElementById('examenDetails');
+
+            // Validar que la pregunta tiene datos
+            if (!pregunta.texto) {
+                mostrarNotificacion('Pregunta sin contenido', 'error');
+                return;
+            }
+
+            let html = `
+                <h2>❓ Pregunta ${preguntaActual + 1}/${preguntasExamen.length}</h2>
+                
+                <div class="pregunta-item">
+                    <div class="pregunta-texto" id="textoPregunta"></div>
+
+                    <div class="opciones">
+            `;
+
+            // Opciones A, B, C, D
+            const opciones = [
+                { letra: 'A', key: 'opcion_a' },
+                { letra: 'B', key: 'opcion_b' },
+                { letra: 'C', key: 'opcion_c' },
+                { letra: 'D', key: 'opcion_d' }
+            ];
+
+            opciones.forEach(opt => {
+                const textoOpcion = pregunta[opt.key] || '';
+                html += `
+                    <div class="opcion" id="opcion${opt.letra}" onclick="seleccionarOpcion('${opt.letra}')">
+                        <label>
+                            <input type="radio" name="respuesta_${preguntaActual}" value="${opt.letra}">
+                            <strong>${opt.letra})</strong>
+                            <span class="opcion-texto" id="texto${opt.letra}"></span>
+                        </label>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+
+                    <div class="botones-nav">
+                        <button class="btn btn-primary" onclick="preguntaAnterior()" ${preguntaActual === 0 ? 'disabled' : ''}>← Anterior</button>
+                        <button class="btn btn-primary" onclick="proximaPregunta()">Siguiente →</button>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+
+            // Llenar textos con LaTeX
+            const textoDiv = document.getElementById('textoPregunta');
+            const contenidoPregunta = pregunta.texto.includes('\\') ? `$$${pregunta.texto}$$` : pregunta.texto;
+            textoDiv.innerHTML = contenidoPregunta;
+
+            // Llenar opciones - VALIDAR que no sean NULL
+            opciones.forEach(opt => {
+                const span = document.getElementById(`texto${opt.letra}`);
+                const textoOpcion = pregunta[opt.key] || `[Opción ${opt.letra} vacía]`;
+                const contenidoOpcion = textoOpcion.includes('\\') ? `$$${textoOpcion}$$` : textoOpcion;
+                span.innerHTML = contenidoOpcion;
+            });
+
+            // Renderizar MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise([container]).catch(() => {});
+            }
+
+            // Marcar respuesta guardada si existe
+            if (respuestas[preguntaActual]) {
+                document.querySelector(`input[value="${respuestas[preguntaActual]}"]`).checked = true;
+                document.getElementById(`opcion${respuestas[preguntaActual]}`).classList.add('selected');
+            }
+        }
+
+        function seleccionarOpcion(opcion) {
+            respuestas[preguntaActual] = opcion;
+            document.querySelectorAll('.opcion').forEach(o => o.classList.remove('selected'));
+            document.getElementById(`opcion${opcion}`).classList.add('selected');
+            document.querySelector(`input[value="${opcion}"]`).checked = true;
+        }
+
+        function proximaPregunta() {
+            if (preguntaActual < preguntasExamen.length - 1) {
+                preguntaActual++;
+                mostrarPregunta();
+            } else {
+                mostrarResultados();
+            }
+        }
+
+        function preguntaAnterior() {
+            if (preguntaActual > 0) {
+                preguntaActual--;
+                mostrarPregunta();
+            }
+        }
+
+        function mostrarResultados() {
+            let correctas = 0;
+            for (let i = 0; i < preguntasExamen.length; i++) {
+                if (respuestas[i] === preguntasExamen[i].respuesta_correcta) {
+                    correctas++;
+                }
+            }
+
+            const porcentaje = Math.round((correctas / preguntasExamen.length) * 100);
+            const container = document.getElementById('examenDetails');
+
+            container.innerHTML = `
+                <h2>✅ Examen Completado</h2>
+                <div style="text-align: center; padding: 2rem;">
+                    <h3 style="font-size: 2.5rem; color: #76d776; margin-bottom: 1rem;">${porcentaje}%</h3>
+                    <p style="color: #e0e0ff; font-size: 1.1rem; margin-bottom: 1rem;">
+                        Respondiste correctamente <strong style="color: #76d776;">${correctas}</strong> de <strong>${preguntasExamen.length}</strong> preguntas
+                    </p>
+                    <a href="/" class="btn btn-primary" style="max-width: 300px; margin: 1rem auto; display: inline-block; text-decoration: none;">← Volver al Inicio</a>
+                </div>
+            `;
+        }
+
+        function mostrarNotificacion(msg, tipo = 'success') {
+            const div = document.createElement('div');
+            div.className = `notification ${tipo}`;
+            div.textContent = msg;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Logros - UNIPAZ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #b0b0d0;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        /* ===== TABS ===== */
+        .tabs-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease 0.2s both;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* ===== LOGROS GRID ===== */
+        .logros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            animation: fadeIn 0.8s ease 0.3s both;
+        }
+
+        .logro-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logro-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .logro-card:hover {
+            transform: translateY(-12px);
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .logro-card:hover::before {
+            left: 100%;
+        }
+
+        .logro-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logro-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #e0e0ff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logro-card p {
+            font-size: 0.85rem;
+            color: #b0b0d0;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            line-height: 1.4;
+        }
+
+        .logro-fecha {
+            font-size: 0.75rem;
+            color: #999;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Logro Desbloqueado */
+        .logro-card.desbloqueado {
+            background: linear-gradient(135deg, rgba(67, 233, 123, 0.15) 0%, rgba(56, 249, 215, 0.15) 100%);
+            border-color: rgba(67, 233, 123, 0.5);
+        }
+
+        .logro-card.desbloqueado .logro-icon {
+            filter: drop-shadow(0 0 10px rgba(67, 233, 123, 0.5));
+        }
+
+        /* Logro Bloqueado */
+        .logro-card.bloqueado {
+            background: linear-gradient(135deg, rgba(100, 100, 120, 0.1) 0%, rgba(80, 80, 100, 0.1) 100%);
+            border-color: rgba(100, 100, 120, 0.3);
+            opacity: 0.6;
+        }
+
+        .logro-card.bloqueado .logro-icon {
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
+
+        .logro-card.bloqueado h3,
+        .logro-card.bloqueado p {
+            opacity: 0.6;
+        }
+
+        .requisito {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #b0b0d0;
+            margin-top: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== ESTADÍSTICAS ====================*/
+        .stats-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: #b0b0d0;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            transform: translateX(-5px);
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .logros-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .logro-icon {
+                font-size: 48px;
+            }
+
+            .logro-card {
+                min-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-btn">← Volver al Inicio</a>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎖️ Mis Logros</h1>
+            <p>Desbloquea logros y demuestra tu dominio académico</p>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <div class="stats-section">
+            <div class="stat-box">
+                <div class="stat-number" id="logrosDesbloqueados">6</div>
+                <div class="stat-label">Logros Desbloqueados</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="logrosRestantes">4</div>
+                <div class="stat-label">Logros Restantes</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="completitude">60%</div>
+                <div class="stat-label">Completitud</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="puntosLogros">310</div>
+                <div class="stat-label">Puntos Totales</div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="mostrarLogros('todos')">Todos</button>
+            <button class="tab-btn" onclick="mostrarLogros('desbloqueados')">Desbloqueados</button>
+            <button class="tab-btn" onclick="mostrarLogros('bloqueados')">Bloqueados</button>
+            <button class="tab-btn" onclick="mostrarLogros('inicio')">Inicio</button>
+            <button class="tab-btn" onclick="mostrarLogros('racha')">Racha</button>
+            <button class="tab-btn" onclick="mostrarLogros('maestria')">Maestría</button>
+            <button class="tab-btn" onclick="mostrarLogros('desafios')">Desafíos</button>
+        </div>
+
+        <!-- GRID DE LOGROS -->
+        <div class="logros-grid" id="logrosGrid">
+            <!-- Logro 1 - DESBLOQUEADO -->
+            <div class="logro-card desbloqueado" data-categoria="inicio">
+                <div class="logro-icon">🥇</div>
+                <h3>Principiante</h3>
+                <p>Completar tu primer quiz</p>
+                <div class="logro-fecha">Desbloqueado: 08 Nov 2025</div>
+                <div class="requisito">+10 puntos</div>
+            </div>
+
+            <!-- Logro 2 - DESBLOQUEADO -->
+            <div class="logro-card desbloqueado" data-categoria="racha">
+                <div class="logro-icon">🔥</div>
+                <h3>En Racha</h3>
+                <p>10 respuestas correctas consecutivas</p>
+                <div class="logro-fecha">Desbloqueado: 07 Nov 2025</div>
+                <div class="requisito">+25 puntos</div>
+            </div>
+
+            <!-- Logro 3 - DESBLOQUEADO -->
+            <div class="logro-card desbloqueado" data-categoria="racha">
+                <div class="logro-icon">🔥🔥</div>
+                <h3>Racha de Fuego</h3>
+                <p>25 respuestas correctas consecutivas</p>
+                <div class="logro-fecha">Desbloqueado: 05 Nov 2025</div>
+                <div class="requisito">+50 puntos</div>
+            </div>
+
+            <!-- Logro 4 - DESBLOQUEADO -->
+            <div class="logro-card desbloqueado" data-categoria="maestria">
+                <div class="logro-icon">💎</div>
+                <h3>Maestro</h3>
+                <p>100% de éxito en una materia</p>
+                <div class="logro-fecha">Desbloqueado: 03 Nov 2025</div>
+                <div class="requisito">+75 puntos</div>
+            </div>
+
+            <!-- Logro 5 - DESBLOQUEADO -->
+            <div class="logro-card desbloqueado" data-categoria="desafios">
+                <div class="logro-icon">⚡</div>
+                <h3>Rápido</h3>
+                <p>Responder correctamente en menos de 15s</p>
+                <div class="logro-fecha">Desbloqueado: 01 Nov 2025</div>
+                <div class="requisito">+15 puntos</div>
+            </div>
+
+            <!-- Logro 6 - DESBLOQUEADO -->
+            <div class="logro-card desbloqueado" data-categoria="maestria">
+                <div class="logro-icon">👑</div>
+                <h3>Top del Podio</h3>
+                <p>Estar en Top 10 global</p>
+                <div class="logro-fecha">Desbloqueado: 30 Oct 2025</div>
+                <div class="requisito">+50 puntos</div>
+            </div>
+
+            <!-- Logro 7 - BLOQUEADO -->
+            <div class="logro-card bloqueado" data-categoria="racha">
+                <div class="logro-icon">🔥🔥🔥</div>
+                <h3>Racha Legendaria</h3>
+                <p>50 respuestas correctas consecutivas</p>
+                <div class="requisito">Progreso: 37/50</div>
+            </div>
+
+            <!-- Logro 8 - BLOQUEADO -->
+            <div class="logro-card bloqueado" data-categoria="desafios">
+                <div class="logro-icon">🚀</div>
+                <h3>Conquistador</h3>
+                <p>Completar el Modo Pesadilla sin errores</p>
+                <div class="requisito">No completado</div>
+            </div>
+
+            <!-- Logro 9 - BLOQUEADO -->
+            <div class="logro-card bloqueado" data-categoria="maestria">
+                <div class="logro-icon">🏆</div>
+                <h3>Campeón</h3>
+                <p>Ganar un concurso por eliminación</p>
+                <div class="requisito">No participado</div>
+            </div>
+
+            <!-- Logro 10 - BLOQUEADO -->
+            <div class="logro-card bloqueado" data-categoria="desafios">
+                <div class="logro-icon">✨</div>
+                <h3>Perfección Semanal</h3>
+                <p>Acertar 50+ preguntas en una semana</p>
+                <div class="requisito">Progreso: 35/50</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function mostrarLogros(categoria) {
+            const tarjetas = document.querySelectorAll('.logro-card');
+            
+            tarjetas.forEach(tarjeta => {
+                if (categoria === 'todos') {
+                    tarjeta.style.display = 'flex';
+                } else if (categoria === 'desbloqueados') {
+                    tarjeta.style.display = tarjeta.classList.contains('desbloqueado') ? 'flex' : 'none';
+                } else if (categoria === 'bloqueados') {
+                    tarjeta.style.display = tarjeta.classList.contains('bloqueado') ? 'flex' : 'none';
+                } else {
+                    const dataCat = tarjeta.getAttribute('data-categoria');
+                    tarjeta.style.display = dataCat === categoria ? 'flex' : 'none';
+                }
+            });
+
+            // Actualizar botón activo
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Efecto de click en cards
+        document.querySelectorAll('.logro-card').forEach(card => {
+            card.addEventListener('click', function() {
+                if (this.classList.contains('desbloqueado')) {
+                    alert('✨ Logro desbloqueado: ' + this.querySelector('h3').textContent);
+                } else {
+                    alert('🔒 Logro bloqueado. Cumple los requisitos para desbloquearlo.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

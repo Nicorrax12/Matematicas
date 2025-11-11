@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rankings - UNIPAZ</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+            padding: 2rem 0;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .back-btn {
+            margin-bottom: 2rem;
+        }
+        
+        .back-btn a {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        
+        .back-btn a:hover {
+            background: rgba(102, 126, 234, 0.3);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-header p {
+            color: #b0b0d0;
+            font-size: 1.1rem;
+        }
+        
+        .rankings-table {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .table-header {
+            background: rgba(102, 126, 234, 0.3);
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 80px 150px 1fr 150px 150px;
+            gap: 1rem;
+            align-items: center;
+            font-weight: bold;
+            color: #e0e0ff;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        .table-body {
+            max-height: 700px;
+            overflow-y: auto;
+        }
+        
+        .table-row {
+            padding: 1rem 1.5rem;
+            display: grid;
+            grid-template-columns: 80px 150px 1fr 150px 150px;
+            gap: 1rem;
+            align-items: center;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .table-row:hover {
+            background: rgba(102, 126, 234, 0.15);
+        }
+        
+        .posicion {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .posicion.top1 { color: #ffd700; }
+        .posicion.top2 { color: #c0c0c0; }
+        .posicion.top3 { color: #cd7f32; }
+        
+        .estudiante {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .nombre {
+            color: #e0e0ff;
+            font-weight: 600;
+        }
+        
+        .carrera {
+            color: #b0b0d0;
+            font-size: 0.9rem;
+        }
+        
+        .racha {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .racha-number {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .puntos {
+            text-align: right;
+            color: #81c784;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #b0b0d0;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 2px solid rgba(244, 67, 54, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            color: #ef5350;
+            margin: 2rem 0;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 3rem;
+            color: #b0b0d0;
+            font-size: 1.1rem;
+        }
+        
+        .scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .scrollbar::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 4px;
+        }
+        
+        .scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">📚 UNIPAZ</a>
+    </div>
+
+    <div class="container">
+        <div class="back-btn">
+            <a href="/">← Volver al inicio</a>
+        </div>
+
+        <div class="page-header">
+            <h1>🏆 Top 10 - Mejores Rachas</h1>
+            <p>Consulta los mejores estudiantes por racha y puntos acumulados</p>
+        </div>
+
+        <div class="rankings-table">
+            <div class="table-header">
+                <div>Posición</div>
+                <div>Estudiante</div>
+                <div>Carrera</div>
+                <div>Racha Actual</div>
+                <div>Puntos</div>
+            </div>
+            <div class="table-body scrollbar" id="tableBody">
+                <div class="loading">
+                    <p>⏳ Cargando datos...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+
+        async function cargarRankings() {
+            try {
+                const response = await fetch(`${API_URL}/rankings/global/racha`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}`);
+                }
+
+                const datos = await response.json();
+                mostrarRankings(datos);
+            } catch (error) {
+                mostrarError(error.message);
+            }
+        }
+
+        function mostrarRankings(datos) {
+            const tableBody = document.getElementById('tableBody');
+            
+            if (!datos || datos.length === 0) {
+                tableBody.innerHTML = '<div class="empty">No hay datos en el ranking</div>';
+                return;
+            }
+
+            let html = '';
+            datos.forEach((usuario, index) => {
+                const posicion = index + 1;
+                let posicionClass = '';
+                let medal = '⭕';
+
+                if (posicion === 1) {
+                    posicionClass = 'top1';
+                    medal = '🥇';
+                } else if (posicion === 2) {
+                    posicionClass = 'top2';
+                    medal = '🥈';
+                } else if (posicion === 3) {
+                    posicionClass = 'top3';
+                    medal = '🥉';
+                }
+
+                // Generar iniciales para el avatar
+                const iniciales = usuario.nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+                html += `
+                    <div class="table-row">
+                        <div class="posicion ${posicionClass}">${medal}</div>
+                        <div class="estudiante">
+                            <div class="avatar">${iniciales}</div>
+                            <div>
+                                <div class="nombre">${usuario.nombre}</div>
+                                <div class="carrera">Estudiante</div>
+                            </div>
+                        </div>
+                        <div class="carrera">-</div>
+                        <div class="racha">
+                            <span>🔥</span>
+                            <span class="racha-number">${usuario.racha}</span>
+                        </div>
+                        <div class="puntos">${usuario.puntos.toLocaleString()}</div>
+                    </div>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+        }
+
+        function mostrarError(mensaje) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = `<div class="error">❌ Error al cargar los datos: ${mensaje}</div>`;
+        }
+
+        // Cargar rankings al abrir la página
+        cargarRankings();
+    </script>
+</body>
+</html>

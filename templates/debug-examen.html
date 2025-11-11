@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Unirse a Examen</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f0f0f0;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #667eea;
+            font-size: 2.5rem;
+        }
+        
+        .controls {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .controls label {
+            color: #e0e0ff;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        input {
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 6px;
+            color: #ffffff;
+            font-family: monospace;
+            font-size: 1rem;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .logs-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .log-section {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 600px;
+        }
+        
+        .log-header {
+            background: rgba(102, 126, 234, 0.3);
+            padding: 1rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #e0e0ff;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        .log {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .log-entry {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            border-left: 3px solid transparent;
+        }
+        
+        .log-entry.info {
+            background: rgba(100, 150, 255, 0.1);
+            border-left-color: #667eea;
+            color: #b0d4ff;
+        }
+        
+        .log-entry.success {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: #4caf50;
+            color: #81c784;
+        }
+        
+        .log-entry.error {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: #f44336;
+            color: #ef5350;
+        }
+        
+        .log-entry.warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left-color: #ffc107;
+            color: #fdd835;
+        }
+        
+        .timestamp {
+            color: #888;
+            font-size: 0.8rem;
+            display: inline-block;
+            min-width: 80px;
+        }
+        
+        @media (max-width: 1200px) {
+            .logs-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Debug Examen - UNIPAZ</h1>
+        
+        <div class="controls">
+            <label>Código (12 caracteres):</label>
+            <input type="text" id="codigo" value="0CEA79DADFAD" maxlength="12" placeholder="Ej: A1B2C3D4E5F6">
+            <button onclick="buscarExamen()">🔍 Buscar Examen</button>
+            <button onclick="cargarPreguntas()" id="btnCargar" disabled>📥 Cargar Preguntas</button>
+        </div>
+
+        <div class="logs-container">
+            <div class="log-section">
+                <div class="log-header">📨 Respuestas de API</div>
+                <div class="log" id="logApi"></div>
+            </div>
+
+            <div class="log-section">
+                <div class="log-header">🎯 Datos Parseados</div>
+                <div class="log" id="logDatos"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let examenId = null;
+        let examenData = null;
+
+        function log(msg, type = 'info', logId = 'logApi') {
+            const logDiv = document.getElementById(logId);
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            entry.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${msg}`;
+            
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${msg}`);
+        }
+
+        async function buscarExamen() {
+            const codigo = document.getElementById('codigo').value.trim().toUpperCase();
+            
+            if (!codigo || codigo.length < 12) {
+                log('❌ Código inválido, debe tener 12 caracteres', 'error');
+                return;
+            }
+
+            log(`🔍 Buscando examen: <strong>${codigo}</strong>`, 'info');
+
+            try {
+                const response = await fetch(`${API_URL}/examenes/buscar-por-codigo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ codigo_acceso: codigo })
+                });
+
+                log(`📊 Status HTTP: <strong>${response.status}</strong>`, 'info');
+
+                const data = await response.json();
+                log(`📋 Respuesta completa: <strong>${JSON.stringify(data)}</strong>`, 'info');
+
+                if (response.ok) {
+                    examenId = data.examen_id;
+                    examenData = data;
+                    
+                    log(`✅ Examen encontrado`, 'success');
+                    log(`Nombre: <strong>${data.nombre}</strong>`, 'success', 'logDatos');
+                    log(`ID: <strong>${data.examen_id}</strong>`, 'success', 'logDatos');
+                    log(`Materia ID: <strong>${data.materia_id}</strong>`, 'success', 'logDatos');
+                    log(`Duración: <strong>${data.duracion}</strong> minutos`, 'success', 'logDatos');
+                    log(`Con contraseña: <strong>${data.tiene_contraseña ? 'SÍ' : 'NO'}</strong>`, 'success', 'logDatos');
+                    
+                    document.getElementById('btnCargar').disabled = false;
+                } else {
+                    log(`❌ Error: ${data.error}`, 'error');
+                    log(`No se encontró el examen`, 'error', 'logDatos');
+                    document.getElementById('btnCargar').disabled = true;
+                }
+            } catch (e) {
+                log(`❌ Error de red: ${e.message}`, 'error');
+                log(`<strong>Excepción:</strong> ${e.toString()}`, 'error', 'logDatos');
+                document.getElementById('btnCargar').disabled = true;
+            }
+        }
+
+        async function cargarPreguntas() {
+            if (!examenId) {
+                log('⚠️ Primero busca un examen', 'warning');
+                return;
+            }
+
+            log(`📥 Cargando preguntas para examen ID: <strong>${examenId}</strong>...`, 'info');
+
+            try {
+                const response = await fetch(`${API_URL}/examenes/${examenId}/preguntas`);
+                
+                log(`📊 Status HTTP: <strong>${response.status}</strong>`, 'info');
+
+                const text = await response.text();
+                log(`📋 Respuesta RAW (primeros 300 chars): <pre>${text.substring(0, 300)}</pre>`, 'info');
+
+                const data = JSON.parse(text);
+                
+                log(`✅ JSON parseado exitosamente`, 'success');
+                log(`Tipo: <strong>${Array.isArray(data) ? 'Array' : typeof data}</strong>`, 'success', 'logDatos');
+                
+                if (Array.isArray(data)) {
+                    log(`🎯 Total preguntas: <strong>${data.length}</strong>`, 'success', 'logDatos');
+                    
+                    if (data.length === 0) {
+                        log(`⚠️ El examen NO tiene preguntas asociadas`, 'warning', 'logDatos');
+                        return;
+                    }
+                    
+                    data.forEach((p, i) => {
+                        const textoCorto = p.texto ? p.texto.substring(0, 60) : 'SIN TEXTO';
+                        log(`<strong>Pregunta ${i + 1}:</strong> "${textoCorto}..."`, 'success', 'logDatos');
+                        
+                        if (p.opcion_a) log(`  A) ${p.opcion_a.substring(0, 50)}`, 'info', 'logDatos');
+                        if (p.opcion_b) log(`  B) ${p.opcion_b.substring(0, 50)}`, 'info', 'logDatos');
+                        if (p.opcion_c) log(`  C) ${p.opcion_c.substring(0, 50)}`, 'info', 'logDatos');
+                        if (p.opcion_d) log(`  D) ${p.opcion_d.substring(0, 50)}`, 'info', 'logDatos');
+                        
+                        log(`  Respuesta correcta: <strong>${p.respuesta_correcta}</strong>`, 'info', 'logDatos');
+                    });
+                } else {
+                    log(`❌ La respuesta NO es un array:`, 'error', 'logDatos');
+                    log(`<pre>${JSON.stringify(data, null, 2)}</pre>`, 'error', 'logDatos');
+                }
+            } catch (e) {
+                log(`❌ Error al cargar: ${e.message}`, 'error');
+                log(`<strong>Excepción:</strong> ${e.toString()}`, 'error', 'logDatos');
+                log(`<strong>Stack:</strong> <pre>${e.stack}</pre>`, 'error', 'logDatos');
+            }
+        }
+
+        // Log inicial
+        log('✅ Página cargada correctamente', 'success');
+        log('Ingresa el código del examen y haz click en "Buscar Examen"', 'info');
+    </script>
+</body>
+</html>

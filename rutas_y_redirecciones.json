@@ -1,0 +1,150 @@
+{
+  "rutas": [
+    {
+      "tipo": "ruta",
+      "endpoint": "static",
+      "url": "/static/<path:filename>",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "index",
+      "url": "/",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "login",
+      "url": "/login",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "registro",
+      "url": "/registro",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "quiz",
+      "url": "/quiz",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "rankings",
+      "url": "/rankings",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "concursos",
+      "url": "/concursos",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "dashboard",
+      "url": "/dashboard",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "api_login",
+      "url": "/api/login",
+      "métodos": [
+        "POST"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "api_register",
+      "url": "/api/register",
+      "métodos": [
+        "POST"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "get_carreras",
+      "url": "/api/carreras",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "get_materias",
+      "url": "/api/materias",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "get_materias_por_carrera",
+      "url": "/api/materias/carrera/<int:carrera_id>",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "get_preguntas",
+      "url": "/api/quiz/preguntas/<int:materia_id>",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "rankings_racha",
+      "url": "/api/rankings/global/racha",
+      "métodos": [
+        "GET"
+      ]
+    },
+    {
+      "tipo": "ruta",
+      "endpoint": "health",
+      "url": "/api/health",
+      "métodos": [
+        "GET"
+      ]
+    }
+  ],
+  "redirecciones": [
+    {
+      "tipo": "redirección",
+      "archivo": ".\\export_routes.py",
+      "línea": 24,
+      "destino": "/ruta",
+      "código": "r'redirect\\([\\'\"]([^\\'\"]+)[\\'\"]\\)',  # redirect('/ruta')"
+    },
+    {
+      "tipo": "redirección",
+      "archivo": ".\\export_routes.py",
+      "línea": 25,
+      "destino": "endpoint",
+      "código": "r'redirect\\(url_for\\([\\'\"]([^\\'\"]+)[\\'\"]\\)',  # redirect(url_for('endpoint'))"
+    }
+  ],
+  "total_rutas": 16,
+  "total_redirecciones": 2
+}

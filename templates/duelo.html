@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duelo 1vs1 - UNIPAZ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER DUELO ===== */
+        .duelo-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .duelo-info {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .jugador {
+            text-align: center;
+        }
+
+        .jugador-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 12px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .jugador-nombre {
+            font-weight: 700;
+            color: #e0e0ff;
+            margin-bottom: 5px;
+        }
+
+        .jugador-carrera {
+            font-size: 0.85rem;
+            color: #b0b0d0;
+        }
+
+        .vs-container {
+            text-align: center;
+        }
+
+        .vs-text {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ronda-info {
+            font-size: 0.9rem;
+            color: #b0b0d0;
+            margin-top: 10px;
+        }
+
+        /* ===== TIMER ===== */
+        .timer-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .timer {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #667eea;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            color: #b0b0d0;
+            margin-top: 8px;
+        }
+
+        /* ===== PREGUNTA SECTION ===== */
+        .pregunta-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        .pregunta-numero {
+            font-size: 0.9rem;
+            color: #b0b0d0;
+            margin-bottom: 15px;
+        }
+
+        .pregunta-texto {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #e0e0ff;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* ===== OPCIONES ===== */
+        .opciones-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .opcion-btn {
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            color: #e0e0ff;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: left;
+        }
+
+        .opcion-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .opcion-btn.seleccionada {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+        }
+
+        .opcion-btn.correcta {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            border-color: #43e97b;
+            color: white;
+        }
+
+        .opcion-btn.incorrecta {
+            background: linear-gradient(135deg, #f5576c, #ff6a88);
+            border-color: #f5576c;
+            color: white;
+        }
+
+        /* ===== RESULTADO SCREEN ===== */
+        .resultado-screen {
+            display: none;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 50px 30px;
+            text-align: center;
+            animation: scaleIn 0.6s ease;
+        }
+
+        .resultado-screen.mostrar {
+            display: block;
+        }
+
+        .resultado-icon {
+            font-size: 80px;
+            margin-bottom: 25px;
+        }
+
+        .resultado-titulo {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #e0e0ff;
+        }
+
+        .resultado-texto {
+            font-size: 1.1rem;
+            color: #b0b0d0;
+            margin-bottom: 30px;
+        }
+
+        .btn-siguiente {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-siguiente:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* ===== ELIMINADO SCREEN ===== */
+        .eliminado-screen {
+            display: none;
+            background: linear-gradient(135deg, rgba(245, 87, 108, 0.15) 0%, rgba(255, 106, 136, 0.15) 100%);
+            border: 2px solid rgba(245, 87, 108, 0.5);
+            border-radius: 8px;
+            padding: 50px 30px;
+            text-align: center;
+            animation: scaleIn 0.6s ease;
+        }
+
+        .eliminado-screen.mostrar {
+            display: block;
+        }
+
+        .eliminado-titulo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f5576c;
+            margin-bottom: 20px;
+        }
+
+        .eliminado-razon {
+            font-size: 1.1rem;
+            color: #b0b0d0;
+            margin-bottom: 30px;
+        }
+
+        .btn-volver {
+            padding: 15px 40px;
+            background: rgba(245, 87, 108, 0.2);
+            color: #f5576c;
+            border: 2px solid #f5576c;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-volver:hover {
+            background: rgba(245, 87, 108, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .duelo-info {
+                grid-template-columns: 1fr;
+            }
+
+            .opciones-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pregunta-texto {
+                font-size: 1.1rem;
+            }
+
+            .timer {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER DUELO -->
+        <div class="duelo-header">
+            <div class="duelo-info">
+                <div class="jugador">
+                    <div class="jugador-avatar">👨‍💻</div>
+                    <div class="jugador-nombre">Tú</div>
+                    <div class="jugador-carrera">Juan Carlos P.</div>
+                </div>
+
+                <div class="vs-container">
+                    <div class="vs-text">⚔️</div>
+                    <div class="ronda-info">Semifinal - Ronda 2</div>
+                </div>
+
+                <div class="jugador">
+                    <div class="jugador-avatar">👩‍💼</div>
+                    <div class="jugador-nombre">Oponente</div>
+                    <div class="jugador-carrera">María González L.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIMER -->
+        <div class="timer-container">
+            <div class="timer" id="timer">30</div>
+            <div class="timer-label">Segundos para responder</div>
+        </div>
+
+        <!-- PREGUNTA SECTION -->
+        <div class="pregunta-section" id="preguntaSection">
+            <div class="pregunta-numero">Pregunta 1 de 1</div>
+            <div class="pregunta-texto">¿Cuál es el área de un cuadrado con lado 5?</div>
+
+            <div class="opciones-grid">
+                <button class="opcion-btn" onclick="seleccionarOpcion(this, false)">
+                    <strong>A)</strong> 10
+                </button>
+                <button class="opcion-btn" onclick="seleccionarOpcion(this, true)">
+                    <strong>B)</strong> 25
+                </button>
+                <button class="opcion-btn" onclick="seleccionarOpcion(this, false)">
+                    <strong>C)</strong> 20
+                </button>
+                <button class="opcion-btn" onclick="seleccionarOpcion(this, false)">
+                    <strong>D)</strong> 30
+                </button>
+            </div>
+        </div>
+
+        <!-- RESULTADO CORRECTO -->
+        <div class="resultado-screen" id="resultadoCorrecto">
+            <div class="resultado-icon">✅</div>
+            <div class="resultado-titulo">¡Correcto!</div>
+            <div class="resultado-texto">Respondiste correctamente. Avanzo a la siguiente pregunta...</div>
+            <button class="btn-siguiente" onclick="siguientePregunta()">Siguiente Pregunta →</button>
+        </div>
+
+        <!-- RESULTADO INCORRECTO -->
+        <div class="resultado-screen" id="resultadoIncorrecto">
+            <div class="resultado-icon">❌</div>
+            <div class="resultado-titulo">¡Respuesta Incorrecta!</div>
+            <div class="resultado-texto">La respuesta correcta era <strong>B) 25</strong></div>
+            <button class="btn-siguiente" onclick="siguientePregunta()">Siguiente Pregunta →</button>
+        </div>
+
+        <!-- ELIMINADO POR RESPUESTA INCORRECTA -->
+        <div class="eliminado-screen" id="eliminadoIncorrecto">
+            <div class="resultado-icon">💀</div>
+            <div class="eliminado-titulo">¡Fuiste Eliminado!</div>
+            <div class="eliminado-razon">Respondiste incorrectamente. María avanza a la siguiente ronda.</div>
+            <button class="btn-volver" onclick="volverConcursos()">Volver a Concursos</button>
+        </div>
+
+        <!-- ELIMINADO POR TIEMPO -->
+        <div class="eliminado-screen" id="eliminadoTiempo">
+            <div class="resultado-icon">⏰</div>
+            <div class="eliminado-titulo">¡Tiempo Agotado!</div>
+            <div class="eliminado-razon">No respondiste a tiempo. María avanza a la siguiente ronda.</div>
+            <button class="btn-volver" onclick="volverConcursos()">Volver a Concursos</button>
+        </div>
+    </div>
+
+    <script>
+        let tiempoRestante = 30;
+        let timerInterval;
+
+        // Iniciar timer
+        function iniciarTimer() {
+            timerInterval = setInterval(() => {
+                tiempoRestante--;
+                document.getElementById('timer').textContent = tiempoRestante;
+
+                if (tiempoRestante <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('preguntaSection').style.display = 'none';
+                    document.getElementById('eliminadoTiempo').classList.add('mostrar');
+                }
+
+                // Color rojo cuando quedan 10 segundos
+                if (tiempoRestante <= 10) {
+                    document.getElementById('timer').style.color = '#f5576c';
+                }
+            }, 1000);
+        }
+
+        function seleccionarOpcion(btn, esCorrecta) {
+            clearInterval(timerInterval);
+            
+            // Desactivar todos los botones
+            document.querySelectorAll('.opcion-btn').forEach(b => {
+                b.disabled = true;
+                b.style.pointerEvents = 'none';
+            });
+
+            if (esCorrecta) {
+                btn.classList.add('correcta');
+                document.getElementById('preguntaSection').style.display = 'none';
+                document.getElementById('resultadoCorrecto').classList.add('mostrar');
+            } else {
+                btn.classList.add('incorrecta');
+                document.getElementById('preguntaSection').style.display = 'none';
+                document.getElementById('eliminadoIncorrecto').classList.add('mostrar');
+            }
+        }
+
+        function siguientePregunta() {
+            location.reload(); // Simulación - en real sería otra pregunta
+        }
+
+        function volverConcursos() {
+            window.location.href = '/concursos';
+        }
+
+        // Iniciar al cargar
+        window.addEventListener('load', iniciarTimer);
+    </script>
+</body>
+</html>

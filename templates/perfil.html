@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - UNIPAZ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            transform: translateX(-5px);
+        }
+
+        /* ===== PROFILE HEADER ===== */
+        .profile-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .avatar-section {
+            text-align: center;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .change-avatar {
+            font-size: 0.85rem;
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .profile-info h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .profile-info p {
+            color: #b0b0d0;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .edit-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* ===== TABS ===== */
+        .tabs-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: transparent;
+            color: #b0b0d0;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #b0b0d0;
+            font-size: 0.9rem;
+        }
+
+        /* ===== SECTION ===== */
+        .section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #e0e0ff;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        /* ===== CHART ===== */
+        .chart-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #b0b0d0;
+            white-space: nowrap;
+        }
+
+        /* ===== TOP MATERIAS ===== */
+        .top-materias {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .materia-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .materia-card h4 {
+            color: #e0e0ff;
+            margin-bottom: 12px;
+        }
+
+        .materia-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .materia-stat-label {
+            color: #b0b0d0;
+        }
+
+        .materia-stat-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .profile-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 25px;
+            }
+
+            .profile-header > :last-child {
+                grid-column: 1;
+            }
+
+            .profile-info h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-btn">← Volver al Inicio</a>
+
+    <div class="container">
+        <!-- PROFILE HEADER -->
+        <div class="profile-header">
+            <div class="avatar-section">
+                <div class="avatar">👨‍💻</div>
+                <div class="change-avatar">Cambiar Avatar</div>
+            </div>
+
+            <div class="profile-info">
+                <h2>Juan Carlos Pérez</h2>
+                <p>📧 juan.carlos@unipaz.edu</p>
+                <p>🏫 Ingeniería - Informática</p>
+                <p>📍 Barrancabermeja, Santander</p>
+                <div class="level-badge">Nivel 5 • 450 XP</div>
+            </div>
+
+            <button class="edit-btn">✏️ Editar Perfil</button>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="mostrarTab('estadisticas')">📊 Estadísticas</button>
+            <button class="tab-btn" onclick="mostrarTab('logros')">🏆 Logros</button>
+            <button class="tab-btn" onclick="mostrarTab('historial')">📜 Historial</button>
+            <button class="tab-btn" onclick="mostrarTab('configuracion')">⚙️ Configuración</button>
+        </div>
+
+        <!-- ===== ESTADÍSTICAS ===== -->
+        <div id="estadisticas" class="section active">
+            <h3>📊 Mis Estadísticas</h3>
+
+            <!-- Stats principales -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">127</div>
+                    <div class="stat-label">Racha Actual 🔥</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">97.8%</div>
+                    <div class="stat-label">Porcentaje Éxito</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">450</div>
+                    <div class="stat-label">Preguntas Correctas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">460</div>
+                    <div class="stat-label">Total Respondidas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2,450</div>
+                    <div class="stat-label">Puntos Totales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Logros Desbloqueados</div>
+                </div>
+            </div>
+
+            <!-- Gráfico de progreso semanal -->
+            <h3 style="margin-top: 40px;">Progreso Semanal</h3>
+            <div class="chart-container">
+                <div class="chart-bar" style="height: 40%;"><span class="chart-label">Lun</span></div>
+                <div class="chart-bar" style="height: 65%;"><span class="chart-label">Mar</span></div>
+                <div class="chart-bar" style="height: 55%;"><span class="chart-label">Mié</span></div>
+                <div class="chart-bar" style="height: 75%;"><span class="chart-label">Jue</span></div>
+                <div class="chart-bar" style="height: 85%;"><span class="chart-label">Vie</span></div>
+                <div class="chart-bar" style="height: 90%;"><span class="chart-label">Sab</span></div>
+                <div class="chart-bar" style="height: 70%;"><span class="chart-label">Dom</span></div>
+            </div>
+
+            <!-- Top Materias -->
+            <h3 style="margin-top: 40px;">Top 3 Materias</h3>
+            <div class="top-materias">
+                <div class="materia-card">
+                    <h4>Matemáticas I</h4>
+                    <div class="materia-stat">
+                        <span class="materia-stat-label">% Éxito</span>
+                        <span class="materia-stat-value">98.5%</span>
+                    </div>
+                    <div class="materia-stat">
+                        <span class="materia-stat-label">Racha</span>
+                        <span class="materia-stat-value">42 🔥</span>
+                    </div>
+                    <div class="materia-stat">
+                        <span class="materia-stat-label">Preguntas</span>
+                        <span class="materia-stat-value">130/132</span>
+                    </div>
+                </div>
+
+                <div class="materia-card">
+                    <h4>Programación I</h4>
+                    <div class="materia-stat">
+                        <span class="materia-stat-label">% Éxito</span>
+                        <span class="materia-stat-value">96.2%</span>
+                    </div>
+                    <div class="materia-stat">
+                        <span class="materia-stat-label">Racha</span>
+                        <span class="materia-stat-value">38 🔥</span>
+                    </div>
+                    <div class="materia-stat">
+                        <span class="materia-stat-label">Preguntas</span>
+                        <span class="materia-stat-value">152/158</span>
+                    </div>
+                </div>
+
+                <div class="materia-card">
+                    <h4>Base de Datos</h4>
+                    <div class="materia-stat">
+                        <span class="materia-stat-label">% Éxito</span>
+                        <span class="materia-stat-value">94.1%</span>
+                    </div>
+                    <div class="materia-stat">
+                        <span class="materia-stat-label">Racha</span>
+                        <span class="materia-stat-value">32 🔥</span>
+                    </div>
+                    <div class="materia-stat">
+                        <span class="materia-stat-label">Preguntas</span>
+                        <span class="materia-stat-value">126/134</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== LOGROS ===== -->
+        <div id="logros" class="section">
+            <h3>🏆 Mis Logros</h3>
+            <p style="color: #b0b0d0; margin-bottom: 20px;">Has desbloqueado 6 logros. ¡Sigue mejorando!</p>
+            <div class="top-materias">
+                <div class="materia-card" style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">🥇</div>
+                    <h4>Principiante</h4>
+                    <p style="font-size: 0.85rem; color: #b0b0d0;">Completar primer quiz</p>
+                </div>
+                <div class="materia-card" style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">🔥</div>
+                    <h4>En Racha</h4>
+                    <p style="font-size: 0.85rem; color: #b0b0d0;">10 correctas consecutivas</p>
+                </div>
+                <div class="materia-card" style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">💎</div>
+                    <h4>Maestro</h4>
+                    <p style="font-size: 0.85rem; color: #b0b0d0;">100% en una materia</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== HISTORIAL ===== -->
+        <div id="historial" class="section">
+            <h3>📜 Historial Reciente</h3>
+            <div style="color: #b0b0d0;">
+                <p>✅ Respondiste correctamente Pregunta #145 de Matemáticas - 08 Nov 2025</p>
+                <p style="margin-top: 15px;">✅ Completaste el Quiz de Programación I - 07 Nov 2025</p>
+                <p style="margin-top: 15px;">🎖️ Desbloqueaste el logro "Racha de Fuego" - 05 Nov 2025</p>
+                <p style="margin-top: 15px;">🏆 Subiste de posición en Ranking Global - 03 Nov 2025</p>
+                <p style="margin-top: 15px;">⚔️ Participaste en Concurso Battle Quiz - 01 Nov 2025</p>
+            </div>
+        </div>
+
+        <!-- ===== CONFIGURACIÓN ===== -->
+        <div id="configuracion" class="section">
+            <h3>⚙️ Configuración</h3>
+            <div style="display: grid; gap: 20px;">
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label>Notificaciones activadas</label>
+                        <input type="checkbox" checked style="width: 24px; height: 24px; cursor: pointer;">
+                    </div>
+                </div>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label>Perfil público</label>
+                        <input type="checkbox" style="width: 24px; height: 24px; cursor: pointer;">
+                    </div>
+                </div>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 8px;">
+                    <button style="width: 100%; padding: 12px; background: rgba(245, 87, 108, 0.2); color: #f5576c; border: 2px solid #f5576c; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        🚪 Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function mostrarTab(tabName) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Mostrar la seleccionada
+            document.getElementById(tabName).classList.add('active');
+
+            // Actualizar botones activos
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

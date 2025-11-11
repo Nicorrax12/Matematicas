@@ -1,0 +1,84 @@
+======================================================================
+RUTAS DE LA APLICACIÓN FLASK
+======================================================================
+
+URL: /static/<path:filename>
+Endpoint: static
+Métodos: GET
+----------------------------------------------------------------------
+URL: /
+Endpoint: index
+Métodos: GET
+----------------------------------------------------------------------
+URL: /login
+Endpoint: login
+Métodos: GET
+----------------------------------------------------------------------
+URL: /registro
+Endpoint: registro
+Métodos: GET
+----------------------------------------------------------------------
+URL: /quiz
+Endpoint: quiz
+Métodos: GET
+----------------------------------------------------------------------
+URL: /rankings
+Endpoint: rankings
+Métodos: GET
+----------------------------------------------------------------------
+URL: /concursos
+Endpoint: concursos
+Métodos: GET
+----------------------------------------------------------------------
+URL: /dashboard
+Endpoint: dashboard
+Métodos: GET
+----------------------------------------------------------------------
+URL: /api/login
+Endpoint: api_login
+Métodos: POST
+----------------------------------------------------------------------
+URL: /api/register
+Endpoint: api_register
+Métodos: POST
+----------------------------------------------------------------------
+URL: /api/carreras
+Endpoint: get_carreras
+Métodos: GET
+----------------------------------------------------------------------
+URL: /api/materias
+Endpoint: get_materias
+Métodos: GET
+----------------------------------------------------------------------
+URL: /api/materias/carrera/<int:carrera_id>
+Endpoint: get_materias_por_carrera
+Métodos: GET
+----------------------------------------------------------------------
+URL: /api/quiz/preguntas/<int:materia_id>
+Endpoint: get_preguntas
+Métodos: GET
+----------------------------------------------------------------------
+URL: /api/rankings/global/racha
+Endpoint: rankings_racha
+Métodos: GET
+----------------------------------------------------------------------
+URL: /api/health
+Endpoint: health
+Métodos: GET
+----------------------------------------------------------------------
+
+
+======================================================================
+REDIRECCIONES EN EL CÓDIGO
+======================================================================
+
+Archivo: .\export_routes.py
+Línea: 24
+Destino: /ruta
+Código: r'redirect\([\'"]([^\'"]+)[\'"]\)',  # redirect('/ruta')
+----------------------------------------------------------------------
+Archivo: .\export_routes.py
+Línea: 25
+Destino: endpoint
+Código: r'redirect\(url_for\([\'"]([^\'"]+)[\'"]\)',  # redirect(url_for('endpoint'))
+----------------------------------------------------------------------

@@ -1,0 +1,114 @@
+[
+  {
+    "endpoint": "index",
+    "methods": [
+      "GET"
+    ],
+    "url": "/"
+  },
+  {
+    "endpoint": "get_carreras",
+    "methods": [
+      "GET"
+    ],
+    "url": "/api/carreras"
+  },
+  {
+    "endpoint": "health",
+    "methods": [
+      "GET"
+    ],
+    "url": "/api/health"
+  },
+  {
+    "endpoint": "api_login",
+    "methods": [
+      "POST"
+    ],
+    "url": "/api/login"
+  },
+  {
+    "endpoint": "get_materias",
+    "methods": [
+      "GET"
+    ],
+    "url": "/api/materias"
+  },
+  {
+    "endpoint": "get_materias_por_carrera",
+    "methods": [
+      "GET"
+    ],
+    "url": "/api/materias/carrera/<int:carrera_id>"
+  },
+  {
+    "endpoint": "get_preguntas",
+    "methods": [
+      "GET"
+    ],
+    "url": "/api/quiz/preguntas/<int:materia_id>"
+  },
+  {
+    "endpoint": "rankings_racha",
+    "methods": [
+      "GET"
+    ],
+    "url": "/api/rankings/global/racha"
+  },
+  {
+    "endpoint": "api_register",
+    "methods": [
+      "POST"
+    ],
+    "url": "/api/register"
+  },
+  {
+    "endpoint": "concursos",
+    "methods": [
+      "GET"
+    ],
+    "url": "/concursos"
+  },
+  {
+    "endpoint": "dashboard",
+    "methods": [
+      "GET"
+    ],
+    "url": "/dashboard"
+  },
+  {
+    "endpoint": "login",
+    "methods": [
+      "GET"
+    ],
+    "url": "/login"
+  },
+  {
+    "endpoint": "quiz",
+    "methods": [
+      "GET"
+    ],
+    "url": "/quiz"
+  },
+  {
+    "endpoint": "rankings",
+    "methods": [
+      "GET"
+    ],
+    "url": "/rankings"
+  },
+  {
+    "endpoint": "registro",
+    "methods": [
+      "GET"
+    ],
+    "url": "/registro"
+  },
+  {
+    "endpoint": "static",
+    "methods": [
+      "GET"
+    ],
+    "url": "/static/<path:filename>"
+  }
+]

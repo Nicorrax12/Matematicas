@@ -1,0 +1,64 @@
+URL: /
+Endpoint: index
+Métodos: GET
+--------------------------------------------------
+URL: /api/carreras
+Endpoint: get_carreras
+Métodos: GET
+--------------------------------------------------
+URL: /api/health
+Endpoint: health
+Métodos: GET
+--------------------------------------------------
+URL: /api/login
+Endpoint: api_login
+Métodos: POST
+--------------------------------------------------
+URL: /api/materias
+Endpoint: get_materias
+Métodos: GET
+--------------------------------------------------
+URL: /api/materias/carrera/<int:carrera_id>
+Endpoint: get_materias_por_carrera
+Métodos: GET
+--------------------------------------------------
+URL: /api/quiz/preguntas/<int:materia_id>
+Endpoint: get_preguntas
+Métodos: GET
+--------------------------------------------------
+URL: /api/rankings/global/racha
+Endpoint: rankings_racha
+Métodos: GET
+--------------------------------------------------
+URL: /api/register
+Endpoint: api_register
+Métodos: POST
+--------------------------------------------------
+URL: /concursos
+Endpoint: concursos
+Métodos: GET
+--------------------------------------------------
+URL: /dashboard
+Endpoint: dashboard
+Métodos: GET
+--------------------------------------------------
+URL: /login
+Endpoint: login
+Métodos: GET
+--------------------------------------------------
+URL: /quiz
+Endpoint: quiz
+Métodos: GET
+--------------------------------------------------
+URL: /rankings
+Endpoint: rankings
+Métodos: GET
+--------------------------------------------------
+URL: /registro
+Endpoint: registro
+Métodos: GET
+--------------------------------------------------
+URL: /static/<path:filename>
+Endpoint: static
+Métodos: GET
+--------------------------------------------------

@@ -1,0 +1,233 @@
+{
+  "app": {
+    "nombre": "UNIPAZ Quiz System",
+    "version": "1.0.0",
+    "descripcion": "Sistema interactivo de exámenes para estudiantes de la Universidad de la Paz",
+    "autor": "UNIPAZ",
+    "ano": 2025
+  },
+  "api": {
+    "baseUrl": "http://localhost:5000",
+    "apiUrl": "http://localhost:5000/api",
+    "timeout": 30000,
+    "retryAttempts": 3
+  },
+  "colores": {
+    "primario": "#667eea",
+    "secundario": "#764ba2",
+    "acento": "#f093fb",
+    "exito": "#43e97b",
+    "error": "#f5576c",
+    "advertencia": "#ff9a56",
+    "info": "#00f2fe"
+  },
+  "carreras": [
+    {
+      "id": 1,
+      "nombre": "Ingeniería",
+      "subtitulo": "Informática",
+      "color": "#667eea",
+      "icono": "⚙️",
+      "descripcion": "Programa de ingeniería en informática"
+    },
+    {
+      "id": 2,
+      "nombre": "Medicina",
+      "subtitulo": "Ciencias de la Salud",
+      "color": "#f5576c",
+      "icono": "🏥",
+      "descripcion": "Programa de medicina general"
+    },
+    {
+      "id": 3,
+      "nombre": "Derecho",
+      "subtitulo": "Ciencias Jurídicas",
+      "color": "#43e97b",
+      "icono": "⚖️",
+      "descripcion": "Programa de derecho"
+    },
+    {
+      "id": 4,
+      "nombre": "Administración",
+      "subtitulo": "Negocios",
+      "color": "#ff9a56",
+      "icono": "📊",
+      "descripcion": "Programa de administración empresarial"
+    },
+    {
+      "id": 5,
+      "nombre": "Psicología",
+      "subtitulo": "Ciencias del Comportamiento",
+      "color": "#00f2fe",
+      "icono": "🧠",
+      "descripcion": "Programa de psicología"
+    },
+    {
+      "id": 6,
+      "nombre": "Educación",
+      "subtitulo": "Pedagogía",
+      "color": "#fee140",
+      "icono": "🎓",
+      "descripcion": "Programa de educación"
+    },
+    {
+      "id": 7,
+      "nombre": "Economía",
+      "subtitulo": "Ciencias Económicas",
+      "color": "#a8edea",
+      "icono": "💰",
+      "descripcion": "Programa de economía"
+    },
+    {
+      "id": 8,
+      "nombre": "Ciencias",
+      "subtitulo": "Investigación Científica",
+      "color": "#12c2e9",
+      "icono": "🔬",
+      "descripcion": "Programa de ciencias"
+    }
+  ],
+  "quiz": {
+    "modos": [
+      {
+        "id": "normal",
+        "nombre": "Normal",
+        "icono": "🎮",
+        "descripcion": "100 preguntas progresivas. Ideal para aprender.",
+        "dificultad": "medio",
+        "cantidad": 100,
+        "tiempoRespuesta": 60
+      },
+      {
+        "id": "hardcore",
+        "nombre": "Hardcore",
+        "icono": "⚡",
+        "descripcion": "Elige dificultad. Un error y vuelves a empezar.",
+        "dificultades": ["facil", "medio", "dificil"],
+        "vidas": 3,
+        "tiempoRespuesta": 30
+      },
+      {
+        "id": "pesadilla",
+        "nombre": "Pesadilla",
+        "icono": "💀",
+        "descripcion": "10 niveles consecutivos sin errores. ¡Desafío extremo!",
+        "dificultad": "dificil",
+        "cantidad": 10,
+        "vidas": 1,
+        "tiempoRespuesta": 20
+      }
+    ]
+  },
+  "logros": [
+    {
+      "id": 1,
+      "nombre": "Principiante",
+      "icono": "🥇",
+      "categoria": "inicio",
+      "requisito": "Completar primer quiz",
+      "puntos": 10
+    },
+    {
+      "id": 2,
+      "nombre": "En Racha",
+      "icono": "🔥",
+      "categoria": "racha",
+      "requisito": "10 respuestas correctas consecutivas",
+      "puntos": 25
+    },
+    {
+      "id": 3,
+      "nombre": "Racha Legendaria",
+      "icono": "🔥🔥🔥",
+      "categoria": "racha",
+      "requisito": "50 respuestas correctas consecutivas",
+      "puntos": 100
+    },
+    {
+      "id": 4,
+      "nombre": "Maestro",
+      "icono": "💎",
+      "categoria": "maestria",
+      "requisito": "100% de éxito en una materia",
+      "puntos": 75
+    },
+    {
+      "id": 5,
+      "nombre": "Campeón",
+      "icono": "🏆",
+      "categoria": "concurso",
+      "requisito": "Ganar un torneo por eliminación",
+      "puntos": 150
+    }
+  ],
+  "animaciones": {
+    "duracionRapida": 300,
+    "duracionMedia": 600,
+    "duracionLenta": 1000,
+    "tiempoEspera": 2000
+  },
+  "notificaciones": {
+    "duracionCorta": 2000,
+    "duracionMedia": 3000,
+    "duracionLarga": 5000,
+    "posicion": "top-right"
+  },
+  "ranking": {
+    "topElementos": 10,
+    "actualizacionCada": 30000,
+    "mostrarPosicion": true
+  },
+  "concursos": {
+    "tiempoRespuesta": 30,
+    "maxParticipantes": 32,
+    "tipos": ["eliminacion", "liga", "grupal"],
+    "premios": {
+      "primero": 50,
+      "segundo": 30,
+      "tercero": 15
+    }
+  },
+  "usuario": {
+    "nivelMinimo": 1,
+    "nivelMaximo": 100,
+    "xpPorNivel": 1000,
+    "streamingRachas": true,
+    "sincronizarEnLinea": true
+  },
+  "seguridad": {
+    "requerirLogin": true,
+    "duracionSesion": 3600000,
+    "recordarUsuario": true
+  },
+  "base_datos": {
+    "host": "localhost",
+    "puerto": 3306,
+    "usuario": "root",
+    "nombre": "unipaz_db",
+    "pool": {
+      "minConnections": 2,
+      "maxConnections": 10
+    }
+  },
+  "idioma": {
+    "defecto": "es",
+    "soportados": ["es", "en", "pt"],
+    "zona_horaria": "America/Bogota"
+  },
+  "cache": {
+    "habilitado": true,
+    "duracion": 300000,
+    "redis": {
+      "host": "localhost",
+      "puerto": 6379,
+      "db": 0
+    }
+  },
+  "logging": {
+    "nivel": "INFO",
+    "archivo": "logs/app.log",
+    "maxArchivos": 10,
+    "maxTamano": "10mb"
+  }
+}

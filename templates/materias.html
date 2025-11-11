@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materias - UNIPAZ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #b0b0d0;
+        }
+
+        /* ===== CARRERA HEADER ===== */
+        .carrera-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        .carrera-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .carrera-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #e0e0ff;
+        }
+
+        .carrera-info p {
+            color: #b0b0d0;
+            font-size: 0.95rem;
+        }
+
+        /* ===== TABS POR SEMESTRE ===== */
+        .semestre-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            animation: fadeIn 0.8s ease 0.2s both;
+        }
+
+        .semestre-btn {
+            padding: 12px 24px;
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .semestre-btn:hover, .semestre-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* ===== MATERIAS GRID ===== */
+        .materias-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            animation: fadeIn 0.8s ease 0.3s both;
+        }
+
+        .materia-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .materia-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .materia-card:hover {
+            transform: translateY(-12px);
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .materia-card:hover::before {
+            left: 100%;
+        }
+
+        .materia-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .materia-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #e0e0ff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .materia-card p {
+            font-size: 0.9rem;
+            color: #b0b0d0;
+            margin-bottom: 15px;
+            flex-grow: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .materia-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.75rem;
+        }
+
+        .btn-continuar {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-continuar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .carrera-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .carrera-info h2 {
+                font-size: 1.5rem;
+            }
+
+            .materias-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-btn">← Volver al Inicio</a>
+
+    <div class="container">
+        <div class="header">
+            <h1>📚 Materias</h1>
+            <p>Selecciona una materia para comenzar</p>
+        </div>
+
+        <!-- CARRERA HEADER -->
+        <div class="carrera-header">
+            <div class="carrera-icon">⚙️</div>
+            <div class="carrera-info">
+                <h2>Ingeniería - Informática</h2>
+                <p>Domina los fundamentos de la programación y desarrollo de software</p>
+            </div>
+        </div>
+
+        <!-- SEMESTRE TABS -->
+        <div class="semestre-tabs">
+            <button class="semestre-btn active" onclick="filtrarSemestre(1)">Semestre 1</button>
+            <button class="semestre-btn" onclick="filtrarSemestre(2)">Semestre 2</button>
+            <button class="semestre-btn" onclick="filtrarSemestre(3)">Semestre 3</button>
+            <button class="semestre-btn" onclick="filtrarSemestre(4)">Semestre 4</button>
+        </div>
+
+        <!-- MATERIAS GRID -->
+        <div class="materias-grid" id="materiasGrid">
+            <!-- Semestre 1 -->
+            <div class="materia-card semestre-1">
+                <div class="materia-icon">📐</div>
+                <h3>Matemáticas I</h3>
+                <p>Álgebra, cálculo y análisis matemático fundamental</p>
+                <div class="materia-stats">
+                    <div class="stat">
+                        <div class="stat-value">98.5%</div>
+                        <div class="stat-label">Tu Éxito</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">42🔥</div>
+                        <div class="stat-label">Racha</div>
+                    </div>
+                </div>
+                <button class="btn-continuar">Continuar →</button>
+            </div>
+
+            <div class="materia-card semestre-1">
+                <div class="materia-icon">💻</div>
+                <h3>Programación I</h3>
+                <p>Fundamentos de programación en Python y C++</p>
+                <div class="materia-stats">
+                    <div class="stat">
+                        <div class="stat-value">96.2%</div>
+                        <div class="stat-label">Tu Éxito</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">38🔥</div>
+                        <div class="stat-label">Racha</div>
+                    </div>
+                </div>
+                <button class="btn-continuar">Continuar →</button>
+            </div>
+
+            <!-- Semestre 2 -->
+            <div class="materia-card semestre-2" style="display: none;">
+                <div class="materia-icon">🗂️</div>
+                <h3>Estructura de Datos</h3>
+                <p>Listas, árboles, grafos y algoritmos de búsqueda</p>
+                <div class="materia-stats">
+                    <div class="stat">
+                        <div class="stat-value">88.3%</div>
+                        <div class="stat-label">Tu Éxito</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">25🔥</div>
+                        <div class="stat-label">Racha</div>
+                    </div>
+                </div>
+                <button class="btn-continuar">Continuar →</button>
+            </div>
+
+            <!-- Semestre 3 -->
+            <div class="materia-card semestre-3" style="display: none;">
+                <div class="materia-icon">🗄️</div>
+                <h3>Base de Datos</h3>
+                <p>Diseño y gestión de bases de datos SQL y NoSQL</p>
+                <div class="materia-stats">
+                    <div class="stat">
+                        <div class="stat-value">94.1%</div>
+                        <div class="stat-label">Tu Éxito</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">32🔥</div>
+                        <div class="stat-label">Racha</div>
+                    </div>
+                </div>
+                <button class="btn-continuar">Continuar →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filtrarSemestre(semestre) {
+            // Ocultar todas las materias
+            document.querySelectorAll('.materia-card').forEach(card => {
+                card.style.display = 'none';
+            });
+
+            // Mostrar materias del semestre seleccionado
+            document.querySelectorAll(`.semestre-${semestre}`).forEach(card => {
+                card.style.display = 'flex';
+            });
+
+            // Actualizar botones activos
+            document.querySelectorAll('.semestre-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Agregar onclick a botones continuar
+        document.querySelectorAll('.btn-continuar').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('Te dirigiremos a la materia seleccionada');
+                // window.location.href = '/quiz/' + materiaId;
+            });
+        });
+    </script>
+</body>
+</html>

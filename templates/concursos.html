@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concursos - UNIPAZ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #f0f0f0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #b0b0d0;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease 0.2s both;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .concursos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            animation: fadeIn 0.8s ease 0.3s both;
+        }
+
+        .concurso-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .concurso-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .concurso-card:hover {
+            transform: translateY(-12px);
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .concurso-card:hover::before {
+            left: 100%;
+        }
+
+        .concurso-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .concurso-title h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: #e0e0ff;
+        }
+
+        .concurso-title p {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .concurso-status {
+            padding: 6px 12px;
+            background: rgba(67, 233, 123, 0.2);
+            color: #43e97b;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .concurso-status.proximo {
+            background: rgba(255, 154, 86, 0.2);
+            color: #ffaa66;
+        }
+
+        .concurso-status.finalizado {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .concurso-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .concurso-description {
+            color: #b0b0d0;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .bracket-container {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 30px;
+            display: none;
+            animation: fadeIn 0.8s ease 0.3s both;
+        }
+
+        .bracket-container.mostrar {
+            display: block;
+        }
+
+        .bracket-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #e0e0ff;
+            text-align: center;
+        }
+
+        .bracket-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .bracket-round {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bracket-round h4 {
+            color: #b0b0d0;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .matchup {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .player {
+            background: rgba(102, 126, 234, 0.15);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player.winner {
+            background: rgba(67, 233, 123, 0.2);
+            border-left: 4px solid #43e97b;
+            padding-left: 6px;
+        }
+
+        .player.eliminated {
+            background: rgba(245, 87, 108, 0.15);
+            opacity: 0.6;
+        }
+
+        .player-name {
+            font-weight: 600;
+            color: #e0e0ff;
+        }
+
+        .player-status {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .cerrar-bracket {
+            width: 100%;
+            margin-top: 25px;
+            padding: 12px;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .cerrar-bracket:hover {
+            background: rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .header h1 { font-size: 1.8rem; }
+            .concursos-grid { grid-template-columns: 1fr; }
+            .bracket-view { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-btn">← Volver al Inicio</a>
+
+    <div class="container">
+        <div class="header">
+            <h1>⚔️ Concursos</h1>
+            <p>Participa en torneos por eliminación y compite con otros estudiantes</p>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="mostrarTab('activos', event)">Concursos Activos</button>
+            <button class="tab-btn" onclick="mostrarTab('proximamente', event)">Próximamente</button>
+            <button class="tab-btn" onclick="mostrarTab('finalizados', event)">Finalizados</button>
+        </div>
+
+        <!-- ACTIVOS -->
+        <div id="activos">
+            <div class="concursos-grid">
+                <div class="concurso-card">
+                    <div class="concurso-header">
+                        <div class="concurso-title">
+                            <h3>Battle Quiz - Matemáticas</h3>
+                            <p>Ingeniería, Economía</p>
+                        </div>
+                        <span class="concurso-status">En Vivo</span>
+                    </div>
+                    <div class="concurso-info">
+                        <div class="info-item">
+                            <div class="info-label">Participantes</div>
+                            <div class="info-value">16/16</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Ronda</div>
+                            <div class="info-value">Semifinal</div>
+                        </div>
+                    </div>
+                    <p class="concurso-description">Demuestra tu dominio en matemáticas en este emocionante torneo de eliminación directa.</p>
+                    <div class="btn-group">
+                        <button class="btn" onclick="verBracket()">Ver Bracket</button>
+                        <button class="btn btn-secondary">Mi Posición</button>
+                    </div>
+                </div>
+
+                <div class="concurso-card">
+                    <div class="concurso-header">
+                        <div class="concurso-title">
+                            <h3>Challenge Biología</h3>
+                            <p>Medicina, Ciencias</p>
+                        </div>
+                        <span class="concurso-status">En Vivo</span>
+                    </div>
+                    <div class="concurso-info">
+                        <div class="info-item">
+                            <div class="info-label">Participantes</div>
+                            <div class="info-value">8/32</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Ronda</div>
+                            <div class="info-value">Ronda 1</div>
+                        </div>
+                    </div>
+                    <p class="concurso-description">Completa los duelos de biología y avanza a las siguientes rondas. ¡Rápido!</p>
+                    <div class="btn-group">
+                        <button class="btn">Ver Bracket</button>
+                        <button class="btn btn-secondary">Inscribirse</button>
+                    </div>
+                </div>
+
+                <div class="concurso-card">
+                    <div class="concurso-header">
+                        <div class="concurso-title">
+                            <h3>Duelo de Derecho</h3>
+                            <p>Derecho</p>
+                        </div>
+                        <span class="concurso-status">En Vivo</span>
+                    </div>
+                    <div class="concurso-info">
+                        <div class="info-item">
+                            <div class="info-label">Participantes</div>
+                            <div class="info-value">4/8</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Ronda</div>
+                            <div class="info-value">Semifinal</div>
+                        </div>
+                    </div>
+                    <p class="concurso-description">Los mejores abogados compiten en este torneo estratégico de preguntas jurídicas.</p>
+                    <div class="btn-group">
+                        <button class="btn" onclick="verBracket()">Ver Bracket</button>
+                        <button class="btn btn-secondary">Ver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROXIMAMENTE -->
+        <div id="proximamente" style="display: none;">
+            <div class="concursos-grid">
+                <div class="concurso-card">
+                    <div class="concurso-header">
+                        <div class="concurso-title">
+                            <h3>Gran Torneo Administración</h3>
+                            <p>Administración</p>
+                        </div>
+                        <span class="concurso-status proximo">Próximamente</span>
+                    </div>
+                    <div class="concurso-info">
+                        <div class="info-item">
+                            <div class="info-label">Inicio</div>
+                            <div class="info-value">15 Nov</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Participantes</div>
+                            <div class="info-value">0/32</div>
+                        </div>
+                    </div>
+                    <p class="concurso-description">Inscríbete ahora para participar en el próximo gran torneo de administración.</p>
+                    <div class="btn-group">
+                        <button class="btn">Inscribirse Ahora</button>
+                    </div>
+                </div>
+
+                <div class="concurso-card">
+                    <div class="concurso-header">
+                        <div class="concurso-title">
+                            <h3>Desafío Psicología</h3>
+                            <p>Psicología</p>
+                        </div>
+                        <span class="concurso-status proximo">Próximamente</span>
+                    </div>
+                    <div class="concurso-info">
+                        <div class="info-item">
+                            <div class="info-label">Inicio</div>
+                            <div class="info-value">22 Nov</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Participantes</div>
+                            <div class="info-value">0/16</div>
+                        </div>
+                    </div>
+                    <p class="concurso-description">Un emocionante torneo sobre comportamiento humano y teorías psicológicas.</p>
+                    <div class="btn-group">
+                        <button class="btn">Inscribirse Ahora</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FINALIZADOS -->
+        <div id="finalizados" style="display: none;">
+            <div class="concursos-grid">
+                <div class="concurso-card">
+                    <div class="concurso-header">
+                        <div class="concurso-title">
+                            <h3>Battle Educación 2025</h3>
+                            <p>Educación</p>
+                        </div>
+                        <span class="concurso-status finalizado">Finalizado</span>
+                    </div>
+                    <div class="concurso-info">
+                        <div class="info-item">
+                            <div class="info-label">🥇 Campeón</div>
+                            <div class="info-value">José L.</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Participantes</div>
+                            <div class="info-value">16</div>
+                        </div>
+                    </div>
+                    <p class="concurso-description">Primer torneo completado con éxito. ¡Felicidades a todos los participantes!</p>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary">Ver Resultados</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BRACKET VIEW -->
+        <div class="bracket-container" id="bracketView">
+            <div class="bracket-title">🏆 Árbol de Torneo - Battle Quiz Matemáticas</div>
+            <div class="bracket-view">
+                <div class="bracket-round">
+                    <h4>Ronda 1</h4>
+                    <div class="matchup">
+                        <div class="player winner">
+                            <span class="player-name">Juan Carlos</span>
+                            <span class="player-status">✓</span>
+                        </div>
+                        <div class="player eliminated">
+                            <span class="player-name">María González</span>
+                            <span class="player-status">✗</span>
+                        </div>
+                    </div>
+                    <div class="matchup">
+                        <div class="player winner">
+                            <span class="player-name">Carlos Rodríguez</span>
+                            <span class="player-status">✓</span>
+                        </div>
+                        <div class="player eliminated">
+                            <span class="player-name">Ana Patricia</span>
+                            <span class="player-status">✗</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bracket-round">
+                    <h4>Semifinal</h4>
+                    <div class="matchup">
+                        <div class="player winner">
+                            <span class="player-name">Juan Carlos</span>
+                            <span class="player-status">✓</span>
+                        </div>
+                        <div class="player eliminated">
+                            <span class="player-name">Carlos Rodríguez</span>
+                            <span class="player-status">✗</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bracket-round">
+                    <h4>Final</h4>
+                    <div class="matchup">
+                        <div class="player winner">
+                            <span class="player-name">Juan Carlos</span>
+                            <span class="player-status">🥇</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="cerrar-bracket" onclick="cerrarBracket()">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        function mostrarTab(tabName, event) {
+            document.querySelectorAll('[id="activos"], [id="proximamente"], [id="finalizados"]').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.getElementById(tabName).style.display = 'block';
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function verBracket() {
+            document.getElementById('bracketView').classList.add('mostrar');
+            document.querySelectorAll('.concursos-grid').forEach(grid => {
+                grid.style.display = 'none';
+            });
+            document.querySelector('.tabs-container').style.display = 'none';
+        }
+
+        function cerrarBracket() {
+            document.getElementById('bracketView').classList.remove('mostrar');
+            document.querySelectorAll('.concursos-grid').forEach(grid => {
+                grid.style.display = 'grid';
+            });
+            document.querySelector('.tabs-container').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

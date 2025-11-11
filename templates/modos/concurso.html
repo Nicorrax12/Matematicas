@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Modo Concurso | Matemáticas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background:#f4f8fb; color:#24416c; font-family: 'Segoe UI', Arial, sans-serif; }
+        .modo-panel { max-width:600px; margin:44px auto; background:#fff; border:2px solid #d5e5f5; box-shadow:0 3px 18px #e5eefe22; border-radius:0; padding:38px 44px; position:relative;}
+        .btn-volver { position: absolute; top:23px; right:28px; background:#206bcd; color:#fff; border:none; padding:8px 20px; font-weight:600; border-radius:0; text-decoration:none; font-size:.98em; transition:background .15s;}
+        .btn-volver:hover { background: #183366; }
+        .modo-panel h2 { color:#206bcd; margin-bottom:15px; font-size:1.37em; }
+        .modo-panel label { font-weight:600; color:#205088; display:block; margin-bottom:9px;}
+        select, button { padding:10px 17px; font-size:1.07em; border-radius:0; border:2px solid #bdd3eb; margin-right:7px;}
+        button {background:#206bcd; color:#fff; border:none; font-weight:700; cursor:pointer;}
+        button:hover {background:#163257;}
+        .pregunta-card {margin-top:34px; background:#f4f8fb; border-left:4px solid #32a852; padding:22px 17px;}
+        .preg-texto { font-size:1.08em; font-weight:700; color:#29952a;}
+        .opcion {margin:13px 0;}
+        .ronda {margin-bottom: 11px; color:#45701d; font-size:.99em; font-weight:bold;}
+        .resultado {margin:20px 0; font-weight:bold;}
+        .eliminado {color:#b14b37;}
+        .sigue {color:#287d36;}
+        @media (max-width:700px){.modo-panel{padding:14px 4px;}}
+    </style>
+</head>
+<body>
+    <div class="modo-panel">
+        <a href="{{ url_for('index') }}" class="btn-volver"><i class="fa-solid fa-arrow-left"></i> Volver al inicio</a>
+        <h2><i class="fa-solid fa-users"></i> Concurso</h2>
+        {% if not nivel_seleccionado %}
+            <form method="POST">
+                <label for="nivel">Elige el nivel académico:</label>
+                <select name="nivel" id="nivel">
+                    {% for valor, nombre in niveles %}
+                        <option value="{{ valor }}">{{ nombre }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Comenzar Concurso</button>
+            </form>
+        {% elif pregunta %}
+            <div class="ronda">Ronda {{ ronda }}</div>
+            <div class="pregunta-card">
+                <form method="POST">
+                    <input type="hidden" name="pregunta_id" value="{{ pregunta.id }}">
+                    <div class="preg-texto">{{ pregunta.texto }}</div>
+                    <div class="opcion">
+                        <label>
+                            <input type="radio" name="opcion" value="a" required>
+                            A) {{ pregunta.opcion_a }}
+                        </label>
+                    </div>
+                    <div class="opcion">
+                        <label>
+                            <input type="radio" name="opcion" value="b">
+                            B) {{ pregunta.opcion_b }}
+                        </label>
+                    </div>
+                    <div class="opcion">
+                        <label>
+                            <input type="radio" name="opcion" value="c">
+                            C) {{ pregunta.opcion_c }}
+                        </label>
+                    </div>
+                    <div class="opcion">
+                        <label>
+                            <input type="radio" name="opcion" value="d">
+                            D) {{ pregunta.opcion_d }}
+                        </label>
+                    </div>
+                    <button type="submit">Responder</button>
+                </form>
+            </div>
+        {% endif %}
+        {% if resultado %}
+            <div class="resultado {% if 'Eliminado' in resultado %}eliminado{% else %}sigue{% endif %}">{{ resultado }}</div>
+        {% endif %}
+        {% if nivel_seleccionado and not pregunta %}
+            <div class="resultado sigue">¡Felicidades, ganaste el concurso y pasaste todas las rondas!</div>
+        {% endif %}
+    </div>
+</body>
+</html>
